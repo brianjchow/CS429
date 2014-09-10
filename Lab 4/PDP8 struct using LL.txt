@@ -1,0 +1,690 @@
+///*
+// ============================================================================
+// Name        : pdp8.c
+// Author      :
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Hello World in C, Ansi-style
+// ============================================================================
+// */
+//
+///*
+//	DEVELOPMENT NOTES
+//
+//		MEMORY ADDRESSING
+//			- 12 bits to work with
+//			- in effect, each address consists of a 5-bit page number and a 7-bit location within a page
+//
+//		MEMORY REFERENCE INSTRUCTION FORMAT
+//
+//			Instruction						 Mnemonic	 Opcode	 Time (cycles)
+//				Logical AND						AND			0		  2
+//				Two's complement add			TAD			1		  2
+//				Increment and skip if zero		ISZ			2		  2
+//				Deposit and clear accumulator	DCA			3		  2
+//				Jump to subroutine				JMS			4		  2
+//				Jump							JMP			5		  1
+//
+//					Bits:	11	to	9 |  8  |  7  | 	6	to	0
+//			 Translation:	  Opcode  | D/I | Z/C | Page address bits
+//
+//	 	INTERPRETING MEMORY REFERENCE INSTRUCTIONS
+//
+//	 		1) Examine Z/C bit
+//	 	 	 - if Z/C == 0
+//	 	 	 	 - the high-order five bits of the memory address are 0 (0th page)
+//	 	 	 - else if == 1
+//	 	 	 	 - the high order five bits of the memory address are the same as the high order 5 bits of the address P (current page)
+//
+//	 		2) Examine D/I bit
+//	 	 		- if D/I == 0
+//	 	 	 		- the address in the instruction (the low-order 7 bits) is the effective address is the
+//	 	 	 	      address of the memory location wanted; NO INDIRECTION
+//	 	 	 	 - else if == 1
+//	 	 	 	 	 - the address in the instruction (the low-order 7 bits) is the address of the address of the memory location; INDIRECTION
+//				 	 - fetching the contents of the address in the instruction gives the effective address (the address of the memory
+//				  	   location wanted)
+//
+//		EXAMPLE
+//			- given the memory reference instruction '067':
+//				- converts to 0000 0110 0111 in binary (spaces added for clarity)
+//				- == 000 0 0 1100111, so
+//					- opcode is 0 (000)
+//					- D/I bit is 0
+//					- Z/C bit is 0
+//					- page address is 1100111
+//				- examine Z/C bit: == 0
+//					- so the high-order five bits of the memory address are 0; page # is 0
+//				- examine D/I bit: == 0
+//					- so the low-order 7 bits in the instruction is the effective address of the memory location wanted
+//				- reference the instruction at memory location 000001100111 ("PC = 0x064")
+//
+//		INTERPRETING OPERATE INSTRUCTIONS
+//			- these are also 12 bits in length
+//			- are separated into two groups, based on the value of the 8th bit:
+//
+//			Group 1 (8th bit is 0)
+//				11    |    10    |    9    |    8    |    7    |    6    |    5    |    4    |    3    |    2    |    1    |    0
+//				 1    |     1    |    1    |    0    |   CLA   |   CLL   |   CMA   |   CML   |   RAR   |   RAL   |   0/1   |   IAC
+//
+//			Group 2 (8th bit is 1)
+//				11    |    10    |    9    |    8    |    7    |    6    |    5    |    4    |    3    |    2    |    1    |    0
+//				 1    |     1    |    1    |    1    |   CLA   |   SMA   |   SZA   |   SNL   |   RSS   |   OSR   |   HLT   |    0
+//
+//			Instruction Translations (from MSB to LSB)
+//				- Group 1
+//					- CLA: clear the A register; set it to zero
+//					- CLL: clear the Link bit
+//					- CMA: complement the A register (bit by bit, change 1 to 0 and 0 to 1)
+//					- CML: complement the Link bit
+//					- RAR: rotate the A register right by:
+//						- one bit if bit 1 of the instruction is 0
+//						- two bits if bit 1 of the instruction is 1
+//					- RAL: rotate the A register left by:
+//						- one bit if bit 1 of the instruction is 0
+//						- two bits if bit 1 of the instruction is 1
+//					- RTR: mnemonic; rotate right by two bits (sets bit 1 in the instruction)
+//					- RTL: mnemonic; rotate left by two bits
+//					- IAC: add 1 to the A register
+//
+//				- Group 2
+//					- CLA: same as above
+//					- SMA: skip on Minus A: if the A register is negative, skip the next instruction
+//					- SZA: skip on Zero A: if the A register is 0, skip the next instruction
+//					- SNL: skip on nonzero Link: if the Link bit is 1, skip the next instruction
+//					- RSS: reverse skip sense: if this bit is 1, the SMA, SZA, and SNL subinstructions will skip on the OPPOSITE condition
+//					- OSR: OR from the Switch Register: the contents of the switch register on the console are ORed into the A register
+//					- HLT: halt
+//
+//		FOR THIS PROGRAM
+//			- each line in the input file consists of two fields
+//				- the first field is a hex representation of a memory address
+//				- the second field is the hex representation of the contents of that location
+//				- exceptions: the very first line in the input file tells the program counter where to start
+//					- so "EP: 067" would mean "PC = 0x67"
+//
+//		NEED
+//			- function to check opcode
+//				- 8 associated functions: 6 for the regular opcodes, 1 for IOT (bit 6), 1 for microinstructions (bit 7)
+//			- 14 functions to support microinstruction ops
+//			- structure to represent 4096 12-bit words
+//				- original used 32 pages of 128 words each
+//				- 0th page is addresses 0000 to 0177, 1st is 0200 to 0377, 2nd is 0400 to 0577, etc (all octal)
+//				- or 0th page is addresses 0x0 to 0x7f, 1st page is addresses 0x80 to 0xFF, 2nd is 0x100 to 0x17F, etc
+//				- or 0th page is addresses 0 to 127, 1st page is addresses 128 to 255, 3rd is 256 to 383, etc
+//				- linked list approach (single)
+//					- each node holds its page number, memory address, contents
+//			- structure to represent the accumulator and link bit
+//				- array of 13 ints, as such
+//
+//				|    0    |    1    |    2    |    3    |    4    |    5    |    6    |    7    |    8    |    9    |    10    |    11    |    12    |
+//
+//			    |												ACCUMULATOR (12 BITS)													  | LINK BIT |
+//
+//				|    12    |    11    |    10    |    9    |    8    |    7    |    6    |    5    |    4    |    3    |    2    |    1    |    0    |
+//
+//				- or just one array of 12 ints for the accumulator, array of one int for link bit
+//
+//			- structure to represent the 12-bit program counter
+//				- array of 12 ints
+//			- op times: opcodes 0 - 4 have time of 2 cycles; only opcode 5 has time of 1 cycle
+//			- indirect addressing adds 1 cycle to the total time
+//			- microinstruction ops take 1 cycle (all)
+//
+//
+//http://www4.wittenberg.edu/academics/mathcomp/bjsdir/PDP8HomePage.htm
+//
+//
+//
+//
+//*/
+//
+///*
+//
+// LATER DESIGN CHANGE POSSIBILITIES
+// 	 - get rid of *page variable in each Node; instead, use address to calculate page #
+// 	 - if not get rid of *page, change it to just an int (since it's only pages 0 - 31)
+// 	 - use an array instead of a linked list (since length is always 4096)
+// 	 	 - store ONLY the words; convert memory address to dec and get the word at the index
+// 	 	 - use the memory address to determine page # (?)
+//
+// */
+//
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <string.h>
+//#include <ctype.h>
+//
+//typedef short boolean;
+//#define TRUE 1
+//#define FALSE 0
+//#define ASCII_ZERO 48
+//#define ASCII_ONE 49
+//#define SIZEOF_PAGE 128
+//
+//boolean debug = TRUE;
+//boolean verbose = FALSE;
+//
+//// *****************************************************************************************************************************************************************************
+//
+//// ------------------------------------------------
+//// begin procedures for handling command line input
+//
+//	typedef char *STRING;
+//
+//	#define CAST(t,e) ((t)(e))
+//	#define TYPED_MALLOC(t) CAST(t*, malloc(sizeof(t)))
+//	#define LINE_WIDTH 72
+//
+//	/* MALLOC space for a string and copy it */
+//
+//	STRING remember_string(const STRING name) {
+//		size_t n;
+//		STRING p;
+//
+//		if (name == NULL) return(NULL);
+//
+//		/* get memory to remember file name */
+//		n = strlen(name) + 1;
+//		p = CAST(STRING, malloc(n));
+//		strcpy(p, name);
+//		return(p);
+//	}
+//
+//	void scanArgs(STRING s) {
+//		/* check each character of the option list for
+//		   its meaning. */
+//
+//		while (*++s != '\0') {
+//			switch (*s) {
+//
+//				// no cases available for this program at this time
+//
+//				case 'v': /* debug option */
+//					verbose = TRUE;
+//					break;
+//
+//				case 'V': // debug option 2
+//					verbose = TRUE;
+//					break;
+//
+//				default:
+//					fprintf (stderr,"PROGR: Bad option %c\n", *s);
+//					exit(-1);
+//			}
+//		}
+//	}
+//
+//// end procedures for handling command line input
+//// ----------------------------------------------
+//
+//// *****************************************************************************************************************************************************************************
+//
+//// -------------------------------------------------
+//// begin miscellaneous procedures for main procedure
+//
+//	void die(char *reason) {
+//		fprintf(stderr, "*** %s ***\n\n", reason);
+//		exit(-1);
+//	}
+//
+//	char* decToHex(int n) {
+//		if (n == 0) {
+//			char *out = calloc(2, sizeof(char));
+//			out[0] = (char) ASCII_ZERO;
+//			out[1] = '\0';
+//			return out;
+//		}
+//		else {
+//			int i, j, r[12];
+//			i = 0;
+//			j = 0;
+//
+//			while (n > 0) {
+//				r[i] = n % 16;
+//				n /= 16;
+//				i++;
+//				j++;
+//			}
+//
+//			char *out = calloc(j + 1, sizeof(char));
+//			j = 0;
+//			for (i--; i >= 0; i--) {
+//				if (r[i] == 10) { 			out[j] = 'A';		}
+//				else if (r[i] == 11) {		out[j] = 'B';		}
+//				else if (r[i] == 12) {		out[j] = 'C';		}
+//				else if (r[i] == 13) {		out[j] = 'D';		}
+//				else if (r[i] == 14) {		out[j] = 'E';		}
+//				else if (r[i] == 15) {		out[j] = 'F';		}
+//				else {
+//					out[j] = (char) (r[i] + ASCII_ZERO);
+//				}
+//				j++;
+//			}
+//			out[j] = '\0';
+//			return out;
+//		}
+//	}
+//
+//	int binToDec(char *binString) {
+//
+//		char *temp = binString;
+//		int num = 0;
+//		do {
+//			int b = *temp == '1' ? 1 : 0;
+//			num = (num << 1) | b;
+//			temp++;
+//		}
+//		while (*temp);
+//		return num;
+//	}
+//
+//	char* hexToBin(char *hexString) {
+//		int len = strlen(hexString);
+//		char *out = calloc((len * 4 + 1), sizeof(char));
+//
+//		int i;
+//		int outCounter = 0;
+//		for (i = 0; i < len; i++) {
+//			char temp = hexString[i];
+//			if (temp == '0') {
+//				out[outCounter] = '0';	out[outCounter + 1] = '0';	out[outCounter + 2] = '0';	out[outCounter + 3] = '0';	outCounter += 4;
+//			}
+//			else if (temp == '1') {
+//				out[outCounter] = '0';	out[outCounter + 1] = '0';	out[outCounter + 2] = '0';	out[outCounter + 3] = '1';	outCounter += 4;
+//			}
+//			else if (temp == '2') {
+//				out[outCounter] = '0';	out[outCounter + 1] = '0';	out[outCounter + 2] = '1';	out[outCounter + 3] = '0';	outCounter += 4;
+//			}
+//			else if (temp == '3') {
+//				out[outCounter] = '0';	out[outCounter + 1] = '0';	out[outCounter + 2] = '1';	out[outCounter + 3] = '1';	outCounter += 4;
+//			}
+//			else if (temp == '4') {
+//				out[outCounter] = '0';	out[outCounter + 1] = '1';	out[outCounter + 2] = '0';	out[outCounter + 3] = '0';	outCounter += 4;
+//			}
+//			else if (temp == '5') {
+//				out[outCounter] = '0';	out[outCounter + 1] = '1';	out[outCounter + 2] = '0';	out[outCounter + 3] = '1';	outCounter += 4;
+//			}
+//			else if (temp == '6') {
+//				out[outCounter] = '0';	out[outCounter + 1] = '1';	out[outCounter + 2] = '1';	out[outCounter + 3] = '0';	outCounter += 4;
+//			}
+//			else if (temp == '7') {
+//				out[outCounter] = '0';	out[outCounter + 1] = '1';	out[outCounter + 2] = '1';	out[outCounter + 3] = '1';	outCounter += 4;
+//			}
+//			else if (temp == '8') {
+//				out[outCounter] = '1';	out[outCounter + 1] = '0';	out[outCounter + 2] = '0';	out[outCounter + 3] = '0';	outCounter += 4;
+//			}
+//			else if (temp == '9') {
+//				out[outCounter] = '1';	out[outCounter + 1] = '0';	out[outCounter + 2] = '0';	out[outCounter + 3] = '1';	outCounter += 4;
+//			}
+//			else if (temp == 'A' || temp == 'a') {
+//				out[outCounter] = '1';	out[outCounter + 1] = '0';	out[outCounter + 2] = '1';	out[outCounter + 3] = '0';	outCounter += 4;
+//			}
+//			else if (temp == 'B' || temp == 'b') {
+//				out[outCounter] = '1';	out[outCounter + 1] = '0';	out[outCounter + 2] = '1';	out[outCounter + 3] = '1';	outCounter += 4;
+//			}
+//			else if (temp == 'C' || temp == 'c') {
+//				out[outCounter] = '1';	out[outCounter + 1] = '1';	out[outCounter + 2] = '0';	out[outCounter + 3] = '0';	outCounter += 4;
+//			}
+//			else if (temp == 'D' || temp == 'd') {
+//				out[outCounter] = '1';	out[outCounter + 1] = '1';	out[outCounter + 2] = '0';	out[outCounter + 3] = '1';	outCounter += 4;
+//			}
+//			else if (temp == 'E' || temp == 'e') {
+//				out[outCounter] = '1';	out[outCounter + 1] = '1';	out[outCounter + 2] = '1';	out[outCounter + 3] = '0';	outCounter += 4;
+//			}
+//			else if (temp == 'F' || temp == 'f') {
+//				out[outCounter] = '1';	out[outCounter + 1] = '1';	out[outCounter + 2] = '1';	out[outCounter + 3] = '1';	outCounter += 4;
+//			}
+//			else {
+//				die("Invalid character encountered in hexToBin()");
+//			}
+//		}
+//		out[outCounter + 1] = '\0';
+//		return out;
+//	}
+//
+//	int hexToDec(char *hexString) {
+//		char *binString = hexToBin(hexString);
+//		return (binToDec(binString));
+//	}
+//
+//// end miscellaneous procedures for main procedure
+//// -----------------------------------------------
+//
+//// *****************************************************************************************************************************************************************************
+//
+//// --------------------------
+//// begin embedded linked list
+//
+//	typedef struct Node Node;
+//	typedef struct LinkedList LinkedList;
+//
+//	struct Node {
+//		//char *page;
+//		int page;
+//		char *address;
+//		char *word;
+//		struct Node *next;
+//	};
+//
+//	struct LinkedList {
+//		struct Node *head;		// head will always be page 0!
+//		struct Node *tail;
+//		char *reg;
+//		int link;
+//		int size;
+//	};
+//
+////	Node *newNode(void) {
+////		return (Node *) malloc(sizeof(struct Node));
+////	}
+//
+//	// might as well be "newPDP8()"
+//	LinkedList *newLinkedList(void) {
+//		LinkedList* out = (LinkedList *) malloc(sizeof(struct LinkedList));
+//		if (out == NULL) {
+//			die("Out of memory!");
+//		}
+//
+//		// initialize LinkedList fields
+//		(*out).head = NULL;
+//		(*out).tail = NULL;
+//		char *temp = calloc(12, sizeof(int));
+//		if (temp == NULL) {
+//			die("Out of memory!");
+//		}
+//		(*out).reg = temp;
+//		(*out).link = 0;
+//		(*out).size = 0;
+//
+//		// add Nodes to represent the 4096 words
+//		int currPageCtr = 0;
+//		int numWordsCtr = 0;
+//		int currAddress = 0;
+//		int total;
+//
+//		for (total = 0; total < 4096; total++) {
+//			Node* temp = (Node *) malloc(sizeof(struct Node));
+//			if (temp == NULL) {
+//				die("Out of memory!");
+//			}
+//
+//			// fill page number given by currPageCtr
+//			// if numWordsCtr % 128 == 0, increment currPageCtr, set numWordsCtr = 1
+//
+//			if (numWordsCtr % SIZEOF_PAGE == 0 && numWordsCtr != 0) {
+//				currPageCtr++;
+//				numWordsCtr = 0;
+//			}
+//			(*temp).page = currPageCtr;
+//			(*temp).address = decToHex(currAddress);
+//			(*temp).word = NULL;
+//			(*temp).next = NULL;
+//
+//			currAddress++;
+//			numWordsCtr++;
+//
+//			// add to list
+//
+//			if ((*out).size == 0) {
+//				(*out).head = temp;
+//				(*out).tail = temp;
+//				(*out).size++;
+//			}
+//			else {
+//				(out->tail)->next = temp;
+//				(*out).tail = temp;
+//				(*out).size++;
+//			}
+//		}
+//		return out;
+//	}
+//
+//	void freeLinkedList(LinkedList* list) {
+//		Node* temp = (*list).head;
+//		Node* currNode = (*list).head;
+//		while (currNode != NULL) {
+//			temp = currNode;
+//			currNode = (*currNode).next;
+//			//free((*temp).page);
+//			free((*temp).address);
+//			free((*temp).word);
+//			free(temp);
+//		}
+//		free(list);
+//	}
+//
+//	void toString(LinkedList* list) {
+//		Node* temp = (*list).head;
+//		int counter = 1;
+//		while (temp != NULL) {
+//			fprintf(stdout, "[%d, %s]", (*temp).page, (*temp).address);
+//			counter++;
+//			if (temp != (*list).tail) {
+//				fprintf(stdout, "---");
+//				if (counter % 20 == 0) {
+//					fprintf(stdout, "\n");
+//				}
+//			}
+//			temp = (*temp).next;
+//		}
+//	}
+//
+//	void set(char *address, char *word, LinkedList* list) {
+//		Node* temp = (*list).head;
+//		int added = 0;
+//		while (temp != NULL && added == 0) {
+//			if (strcmp((*temp).address, address) == 0) {
+//				(*temp).word = word;
+//				added = 1;
+//			}
+//			temp = (*temp).next;
+//		}
+//		if (added == 0) {
+//			die("Fatal error: attempted to access nonexistent memory address");
+//		}
+//	}
+//
+//	Node* get(int index, LinkedList* list) {
+//		if (index < 0 || index >= (*list).size) {
+//			return NULL;
+//		}
+//		Node* temp = (*list).head;
+//		int counter = 0;
+//		while (counter < index) {
+//			temp = (*temp).next;
+//			counter++;
+//		}
+//		return temp;
+//	}
+//
+//// end embedded linked list
+//// ------------------------
+//
+//// *****************************************************************************************************************************************************************************
+//
+////	typedef struct PDP8 PDP8;
+////
+////	struct PDP8 {
+////		int *pages;
+////		int *addresses;
+////		int *words;
+////		int *reg;
+////		char link;
+////	};
+////
+////	PDP8 *newPDP8() {
+////
+////		PDP8 *out = (PDP8 *) malloc(sizeof(struct PDP8));
+////		int pagesTemp[4096];
+////		int addressesTemp[4096];
+////		int wordsTemp[4096];
+////		int regTemp[4096];
+////
+////		// fill pages
+////		int pageCtr = 0;
+////		int i;
+////
+////		for (i = 0; i < 4096; i++) {
+////			if (i % 128 == 0 && i != 0) {
+////				pageCtr++;
+////			}
+////			pagesTemp[i] = pageCtr;
+////			addressesTemp[i] = i;
+////			wordsTemp[i] = 0;
+////		}
+////
+////		int *pagesPtr = pagesTemp;
+////		int *addressesPtr = addressesTemp;
+////		int *wordsPtr = wordsTemp;
+////		(*out).pages = pagesPtr;
+////		(*out).addresses = addressesPtr;
+////		(*out).words = wordsPtr;
+////		(*out).link = (char) ASCII_ZERO;
+////
+////		for (i = 0; i < 12; i++) {
+////			regTemp[i] = 0;
+////		}
+////		int *regPtr = regTemp;
+////		(*out).reg = regPtr;
+////
+////		return out;
+////	}
+//
+//	// need to strip whitespace before and after string
+//	void parseLine(char *string, LinkedList* list, int start) {
+//		int indexOfFirstColon = -1;
+//		char *ptrToFirstColon = strchr(string, ':');
+//		if (ptrToFirstColon == NULL) {
+//			return;
+//			// MALFORMED LINE DO SOMETHING HERE
+//		}
+//		indexOfFirstColon = ptrToFirstColon - string;
+////		if (indexOfFirstColon != 3) {
+////			return;
+////			// MALFORMED LINE DO SOMETHING HERE
+////		}
+//
+//		printf("%s with index of first colon at %d\n", string, start);
+//
+//		if (indexOfFirstColon == 2 && start == -1) {
+//			char startAddress[4];
+//			startAddress[0] = string[4];
+//			startAddress[1] = string[5];
+//			startAddress[2] = string[6];
+//			startAddress[3] = '\0';
+//
+//			char *startAddressPtr = startAddress;
+//
+//			start = hexToDec(startAddressPtr);
+//		}
+//		else if (indexOfFirstColon == 2 && start != -1) {
+//			die("Multiple EP lines detected; halting");
+//		}
+//		else if (indexOfFirstColon == 3) {
+//			char address[4];
+//			char word[4];
+//
+//			address[0] = string[0];
+//			address[1] = string[1];
+//			address[2] = string[2];
+//			address[3] = '\0';
+//
+//			word[0] = string[5];
+//			word[1] = string[6];
+//			word[2] = string[7];
+//			word[3] = '\0';
+//
+//			char *addressPtr = address;
+//			char *wordPtr = word;
+//
+//			set(addressPtr, wordPtr, list);
+//		}
+//		else {
+//
+//		}
+//
+//
+//
+//		// grab first three chars; store in buffer for address
+//		// grab last three chars (should be indices 5, 6, 7); store in buffer for word
+//		// store in LinkedList (use set())
+//		// add instruction to buffer for instruction processing after storing everything in LL?
+//	}
+//
+//	// bits 0 to 2 are the opcode
+//	int getOpcode(char *binString) {
+//		char temp[3];
+//		temp[0] = binString[0];
+//		temp[1] = binString[1];
+//		temp[2] = binString[2];
+//		temp[3] = '\0';
+//		char *tempPtr = temp;
+//		int opcode = binToDec(tempPtr);
+//		return opcode;
+//	}
+//
+//int main(int argc, char **argv) {
+//
+//	LinkedList* test = newLinkedList();
+////	toString(test);
+////	printf("\n");
+////	Node* testGet = get(4095, test);
+////	printf("testGet page/address value: [%d, %s]\n", (*testGet).page, (*testGet).address);
+//
+//	//Node* pcStart = (Node *) malloc(sizeof(struct Node));
+//	int startIndex = -1;
+//
+//	char *filename = "test.obj";
+//
+//	FILE *file;
+//
+//	file = fopen(filename, "rb");
+//
+//	if (file == NULL) {
+//		fprintf(stderr, "Error: cannot open file \'%s\'!\n", filename);
+//		exit(-1);
+//	}
+//
+//	int byte;
+//	int counter = 0;
+//	size_t buflen = 10;
+//	char *buffer = calloc(buflen, sizeof(char));
+//	if (buffer == NULL) {
+//		die("Out of memory");
+//	}
+//	char *end = buffer + buflen - 1;
+//	char *bufPtr = buffer;
+//
+//	while ((byte = getc(file)) != EOF && bufPtr < end) {
+//		if (byte == '\n') {
+//			*bufPtr++ = '\0';
+//			if (debug) { printf("%s\n", buffer); }
+//			parseLine(buffer, test, startIndex);
+//			memset(buffer, 0, sizeof(*buffer));
+//			bufPtr = buffer;
+//			counter = 0;
+//		}
+//		else {
+//			*bufPtr++ = byte;
+//			counter++;
+//		}
+//	}
+//
+//	char *woo = "ff";
+//	printf("\n\n%d\n", hexToDec(woo));
+//
+//	if (startIndex == -1) {
+//		die("No EP line detected; halting");
+//	}
+//
+//	printf("\n\nStart index is %d\n", startIndex);
+//
+////	Node* pcStart = get(startIndex, test);
+////
+////	toString(test);
+//
+//	//printf("%l\n", strtol("11111111", NULL, 2));
+//
+//	return 0;
+//}

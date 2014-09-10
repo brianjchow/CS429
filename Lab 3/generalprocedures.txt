@@ -1,0 +1,62 @@
+/*
+
+ 	 General procedure for reading input file:
+ 	 	 - use int getc(FILE *stream) to read until \n is encountered; use a counter to count the number of characters read
+ 	 	 - once \n is encountered, use char *fgets(char *s, int n, FILE *stream) to read and copy that line to an array
+ 	 	 - process that string
+ 	 	 - reset counter to 0
+ 	 	 - repeat procedure until getc() reads in EOF
+ 	 	 - fgets(): "reads at most the next n - 1 characters into the array s, stopping if a newline is encountered; the newline is included in the array" (K&R 247)
+
+ 	 Main procedure
+
+ 	 	 - SOME PROCEDURE FOR CHECKING COMMAND LINE INPUT SYNTAX
+
+ 	 	 - begin reading facts file using general procedure above
+ 	 	 - check if string returned by reading is valid
+ 	 	 	 - check that it has an 'F' (case-insensitive), a colon, and an equals sign, in that order
+ 	 	 	 - if invalid
+ 	 	 	 	 - print out string skipped statement to standard output
+ 	 	 	 	 - discard string; return to reading facts file
+ 	 	 	 - else
+ 	 	 	 	 - strip string of excess whitespace
+ 	 	 	 	 	 - strip any whitespace before and after 'F'
+ 	 	 	 	 	 - strip any whitespace before and after the first colon
+ 	 	 	 	 	 - strip any whitespace before and after the first equals sign after the colon
+ 	 	 	 - send string to procedure for storing
+
+		 - if questions file was provided
+		 	 - begin reading questions file using general procedure above
+		 	 - check if string returned by reading is valid
+		 	 	 - check that it has a 'Q' (case-insensitive) and a colon, in that order
+		 	 	 - if invalid
+		 	 	 	 - print out string skipped statement to standard output
+		 	 	 	 - discard string; return to reading questions file
+		 	 	 - else
+		 	 	 	 - strip string of excess whitespace
+		 	 	 	 	 - strip any whitespace before and after 'Q'
+		 	 	 	 	 - strip any whitespace before and after the first colon
+		 	 	 	 - send string to procedure for retrieving
+		 - else (no questions file was provided)
+		 	 - begin reading from standard input
+		 	 - check if string returned by reading is valid
+		 	 	 - check that it has a 'Q' (case-insensitive) and a colon, in that order
+		 	 	 - if invalid
+		 	 	 	 - print out string skipped statement to standard output
+		 	 	 	 - discard string; return to reading questions file
+		 	 	 - else
+		 	 	 	 - strip string of excess whitespace
+		 	 	 	 	 - strip any whitespace before and after 'Q'
+		 	 	 	 	 - strip any whitespace before and after the first colon
+		 	 	 	 - send string to procedure for retrieving
+
+ 	 General procedure for storing
+ 	 	 - separate string into the three fields, skipping the first letter in the string ('F'); store each field in a char array
+ 	 	 - send the three char arrays and a LinkedList to add()
+ 	 	 - return 1 if stored successfully, exit(-1) otherwise (?????????????????????????????)
+
+ 	 General procedure for retrieving
+ 	 	 - separate string into the two fields, skipping the first letter in the string ('Q'); store each field in a char array
+ 	 	 - send the two char arrays and the LinkedList with facts to get()
+
+ */

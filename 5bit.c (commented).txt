@@ -1,0 +1,514 @@
+/*
+
+00000: A : 0
+00001: B : 1
+00010: C : 2
+00011: D : 3
+00100: E : 4
+00101: F : 5
+00110: G : 6
+00111: H : 7
+01000: I : 8
+01001: J : 9
+01010: K : 10
+01011: L : 11
+01100: M : 12
+01101: N : 13
+01110: O : 14
+01111: P : 15
+10000: Q : 16
+10001: R : 17
+10010: S : 18
+10011: T : 19
+10100: U : 20
+10101: V : 21
+10110: W : 22
+10111: X : 23
+11000: Y : 24
+11001: Z : 25
+11010: 0 : 26
+11011: 1 : 27
+11100: 2 : 28
+11101: 3 : 29
+11110: 4 : 30
+11111: 5 : 31
+
+1) Break bit stream into 5 bit chunks
+   If last chunk is not 5 bits, pad with 0s at the end
+2) Ignore any character that isn't A-Z or 0-5
+
+http://stackoverflow.com/questions/18109458/read-from-a-text-file-and-parse-lines-into-words-in-c
+http://cboard.cprogramming.com/c-programming/59164-problem-malloc-sorting-words-text-file.html
+http://www.dreamincode.net/forums/topic/29898-reading-a-text-file-into-an-array-dynamically-c/
+http://www.daniweb.com/software-development/c/threads/66574/read-file-with-unknown-buffer-length !!!!!
+http://www.dreamincode.net/forums/topic/252856-values-not-storing-correctly-in-dynamic-array-after-while-loop/ !!!!!!!!!!!!
+
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+#define LINE_WIDTH 72
+
+void encode() {
+
+	FILE *input;
+	int i, size;
+	char *array;
+
+	input = fopen("smile.gif", "rb");				// NEED TO ALLOW FOR COMMAND LINE INPUTS LATER
+	if (input == NULL) {
+		perror("Invalid file specified");
+		exit(1);
+	}
+
+	fseek(input, 0, SEEK_END);
+	size = ftell(input);
+	fseek(input, 0, SEEK_SET);
+		//printf("Size in bytes: %d\n", size);
+		//printf("Size of allocated array: %u bytes\n", (sizeof(int) * size));
+
+	//array = (char*) malloc(((size + 1) * sizeof(char)));		// FREE BEFORE PROGRAM CLOSE (free(array))
+	array = (char*) calloc(size, sizeof(char));
+	char *arrayPtr = array;
+	if (array == NULL) {
+		perror("Could not allocate array");
+		exit(1);
+	}
+	else {
+		//input = fopen("FourScore.txt", "rb");					// NEED TO ALLOW FOR COMMAND LINE INPUTS LATER
+			//fread(array, sizeof(char), size, input);
+		fread(arrayPtr, sizeof(char), size, input);
+		// some check on return value of fread?
+		// Upon successful completion, fread() shall return the number of elements
+		// 	successfully read which is less than nitems only if a read error or end-of-file
+		//	is encountered. If size or nitems is 0, fread() shall return 0 and the contents
+		//	of the array and the state of the stream remain unchanged. Otherwise, if a read
+		//	error occurs, the error indicator for the stream shall be set, [CX] [Option Start]
+		//	and errno shall be set to indicate the error.
+		//arrayPtr[size] = 10;										// for EOF
+		fclose(input);
+	}
+
+//	for (i = 0; i < (size + 1); i++) {
+//		//printf("array[%d] == %c\n", i, ((char *)array)[i]);
+//		//printf("array[%d] == %d\n", i, ((char *)array)[i]);
+//		printf("array[%d] == %d\n", i, arrayPtr[i]);
+//	}
+
+	//int *bits = (int*) malloc(((size + 1) * 8));				// FREE BEFORE PROGRAM CLOSE (free(bits))
+	int *bits = (int*) calloc((size + 1) * 8, sizeof(int));
+	int *bitsPtr = bits;
+	int counter = 0;
+	for (i = 0; i < (size); i++) {
+		int temp = arrayPtr[i];
+		bitsPtr[counter] = (temp >> 7) & 1;
+		counter++;
+		bitsPtr[counter] = (temp >> 6) & 1;
+		counter++;
+		bitsPtr[counter] = (temp >> 5) & 1;
+		counter++;
+		bitsPtr[counter] = (temp >> 4) & 1;
+		counter++;
+		bitsPtr[counter] = (temp >> 3) & 1;
+		counter++;
+		bitsPtr[counter] = (temp >> 2) & 1;
+		counter++;
+		bitsPtr[counter] = (temp >> 1) & 1;
+		counter++;
+		bitsPtr[counter] = (temp >> 0) & 1;
+		counter++;
+	}
+
+//	printf("\nBit stream: ");
+//	for (i = 0; i < ((size + 1) * 8); i++) {
+//		if (i % LINE_WIDTH == 0) {
+//			printf("\n");
+//		}
+//		printf("%d", bitsPtr[i]);
+//	}
+//	printf("\n  Expected: 0100011001101111011101010111001000100000011100110110001101101111011100100110010100001010\n");
+//	printf("Expected breakup: 01000 11001 10111 10111 01010 11100 10001 00000 01110 01101 10001 10110 11110 11100 10011 00101 00001 010\n");
+
+	int newSize = (size) * 8;
+	while (newSize % 5 != 0) {
+		newSize++;
+	}
+	printf("Orig size: %d\n", (size) * 8);
+	printf("Newsize: %d\n", newSize);
+
+	// if newSize > size, need to pad the end with 0s; MUST IMPLEMENT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	int *padded = (int*) calloc(newSize, sizeof(int));
+	int *paddedPtr = padded;
+	for (i = 0; i < ((size) * 8); i++) {
+		paddedPtr[i] = bits[i];
+	}
+	for (; i < newSize; i++) {
+		paddedPtr[i] = 0;
+	}
+
+	printf("       Padded bs: ");
+	for (i = 0; i < newSize; i++) {
+		if ((i - 4) % 5 == 0 && i != 0) {
+			if (i % LINE_WIDTH == 0) {
+				printf("\n");
+			}
+			printf("%d", paddedPtr[i]);
+		}
+		else {
+			if (i % LINE_WIDTH == 0) {
+				printf("\n");
+			}
+			printf("%d", paddedPtr[i]);
+		}
+	}
+
+	//int *encoded = (int*) malloc(newSize / 5);				// FREE LATER
+	int *encoded = (int*) calloc((newSize / 5), sizeof(int));
+	int *encodedPtr = encoded;
+
+
+	//printf("\n\nCompleted mask: ");
+	counter = 4;
+	int encodedCounter = 0;
+	int mask = 0;
+	int curBit;
+	for (i = 0; i < newSize; i++) {
+		//printf("Current index value: %d\n", i);
+		curBit = paddedPtr[i];
+		//printf("Current bit: %d\n", curBit);
+		//printf("Mask before shift: %d\n", mask);
+		mask |= (curBit << counter);
+		//printf("Current mask: %d\n", mask);
+		counter--;
+		if (counter < 0) {
+			//printf("%d|", mask);
+			encodedPtr[encodedCounter] = mask;				// assumes that nothing over 8 bits will be sent in
+			//printf("\nOOGA: %d\n", encodedPtr[encodedCounter]);
+			mask = 0;
+			counter = 4;
+			encodedCounter++;
+			//printf("\n");
+		}
+	}
+
+	//if 5-bit number is between 0 and 25 inclusive, add 65 to its value
+	//else add 22
+
+	printf("\nFully encoded: ");
+	for (i = 0; i < (newSize / 5); i++) {
+		int temp = encodedPtr[i];
+		//printf("Before encode: %d\n", temp);
+		if (temp >= 0 && temp <= 25) {
+			encodedPtr[i] += 65;
+			printf("%c", encodedPtr[i]);
+		}
+		else {
+			encodedPtr[i] += 22;
+			printf("%c", encodedPtr[i]);
+		}
+	}
+	//printf("\n     Expected: I|Z|X|X|K|2|R|A|O|N|R|W|4|2|T|F|B|I|");
+
+
+
+
+//	printf("\n\nContents of encoded array:");
+//	for (i = 0; i < (newSize / 5); i++) {
+//		printf("%d|", encoded[i]);
+//	}
+
+	//printf("OFEJIWV %d\n", bitsPtr[22]);
+
+	// int newSize = size;
+	// current size is newSize = 88
+	// while (newSize % 5 != 0) { increment newSize}
+	// allocate new char array of size (newSize / 5)
+	//
+
+
+    //printf("Even parity: %d\n", getEvenParity(0x9));
+    //printf("Odd parity: %d\n", getOddParity(0x9));
+
+	/*
+
+	NEED TO ACCOUNT FOR EOF CHARACTER FOR STRINGS SOMEWHERE!
+
+	01000110011011110111010101110010001000000111001101100011011011110111001001100101					   <= actual, no enter after last character
+	01000110011011110111010101110010001000000111001101100011011011110111001001100101 00001101 00001010     <= actual, enter after last character
+	01000110011011110111010101110010001000000111001101100011011011110111001001100101 00001010              <= expected
+
+	 */
+
+
+/*  USING INT ARRAY
+
+ 	FILE *input;
+	int i, size;
+	int *array;
+
+	input = fopen("FourScore.txt", "rb");		// NEED TO ALLOW FOR COMMAND LINE INPUTS LATER
+	if (input == NULL) {
+		perror("Invalid file specified.");
+		exit(1);
+	}
+
+	fseek(input, 0, SEEK_END);
+	size = ftell(input);
+	fseek(input, 0, SEEK_SET);
+		printf("Size in bytes: %d\n", size);
+		//printf("Size of allocated array: %u bytes\n", (sizeof(int) * size));
+
+	array = (int*) malloc(size * sizeof(int));
+	if (array == NULL) {
+		perror("Could not allocate array.");
+		exit(1);
+	}
+	else {
+		input = fopen("FourScore.txt", "rb");	// NEED TO ALLOW FOR COMMAND LINE INPUTS LATER
+		fread(array, sizeof(int), size, input);
+		// some check on return value of fread?
+		fclose(input);
+	}
+
+	for (i = 0; i < size; i++) {
+		//printf("array[%d] == %c\n", i, ((char *)array)[i]);
+		printf("array[%d] == %d\n", i, ((char *)array)[i]);
+		//printf("array[%d] == %d\n", i, array[i]);
+	}
+
+ */
+
+	// http://www2.lawrence.edu/fast/GREGGJ/CMSC110/dynamic/dynamic_arrays.html
+
+}
+
+void decode() {
+
+	FILE *input;
+	int i, size;
+	char *padded;
+
+	input = fopen("gettysburg.5b", "rb");
+	if (input == NULL) {
+		perror("Invalid file specified");
+		exit(1);
+	}
+
+	fseek(input, 0, SEEK_END);
+	size = ftell(input);
+	fseek(input, 0, SEEK_SET);
+
+	padded = (char*) calloc(size, sizeof(char));
+	if (padded == NULL) {
+		perror("Could not allocate array");
+		exit(1);
+	}
+	else {
+		fread(padded, sizeof(char), size, input);
+		//padded[size - 1] = NULL;
+		//size--;														// don't count the EOF character
+		fclose(input);
+	}
+
+//	printf("Padded: ");
+//	for (i = 0; i < size; i++) {
+//		printf("%c", padded[i]);
+//	}
+
+	int *bitsPadded = (int*) calloc(size * 5, sizeof(int));
+	int *bitsPaddedPtr = bitsPadded;
+	int counter = 0;
+	for (i = 0; i < size; i++) {
+		int temp = padded[i];
+		//printf("%c", temp);
+		if (temp >= 65 && temp <= 90) {
+			temp -= 65;
+		}
+		else {
+			temp -= 22;
+		}
+		bitsPaddedPtr[counter] = (temp >> 4) & 1;
+		counter++;
+		bitsPaddedPtr[counter] = (temp >> 3) & 1;
+		counter++;
+		bitsPaddedPtr[counter] = (temp >> 2) & 1;
+		counter++;
+		bitsPaddedPtr[counter] = (temp >> 1) & 1;
+		counter++;
+		bitsPaddedPtr[counter] = (temp >> 0) & 1;
+		counter++;
+	}
+
+//	printf("Padded BS: \n");
+//	for (i = 0; i < (size * 5); i++) {
+//		if ((i + 1) % 72 == 0 && i != 0) {
+//			printf("\n");
+//		}
+//		printf("%d", bitsPadded[i]);
+//		if ((i + 1) % 8 == 0 && i != 0) {
+//			printf("|");
+//		}
+//	}
+	//printf("\n Expected: 010001100110111101110101011100100010000001110011011000110110111101110010011001010000101000\n");
+
+	int newSize = size * 5;
+	while (newSize % 8 != 0) {
+		newSize--;
+	}
+
+//	printf("\nOrig size: %d\n", size * 5);
+//	printf("\nNewsize: %d\n", newSize);
+
+	/*
+	 gettysburg.txt
+	 	 Orig size: 11808
+	 	 Newsize: 11810
+
+	 */
+
+	//int *decoded = (int*) calloc(newSize / 8, sizeof(int));
+	int *decoded = (int*) calloc(newSize, sizeof(int));
+	int *decodedPtr = decoded;
+	counter = 7;
+	int decodedCounter = 0;
+	int mask = 0;
+	int curBit;
+	for (i = 0; i < (size * 5); i++) {
+		//printf("Current index value: %d\n", i);
+		curBit = bitsPaddedPtr[i];
+		//printf("Current bit: %d\n", curBit);
+		//printf("Mask before shift: %d\n", mask);
+		mask |= (curBit << counter);
+		//printf("Current mask: %d\n", mask);
+		counter--;
+		if (counter < 0) {
+			//printf("%d|", mask);
+			decodedPtr[decodedCounter] = mask;				// assumes that nothing over 8 bits will be sent in
+			//printf("\nOOGA: %d, %c\n", decoded[decodedCounter], decoded[decodedCounter]);
+			mask = 0;
+			counter = 7;
+			decodedCounter++;
+			//printf("\n");
+		}
+	}
+
+	printf("Fully decoded:\n" );
+	for (i = 0; i < (newSize / 8); i++) {
+		printf("%c", decodedPtr[i]);
+	}
+}
+
+void decodeV2() {
+
+	FILE *input;
+	int i, size;
+
+	input = fopen("four.5b", "rb");
+	if (input == NULL) {
+		perror("Invalid file specified");
+		exit(1);
+	}
+
+	fseek(input, 0, SEEK_END);
+	size = ftell(input);
+	fseek(input, 0, SEEK_SET);
+	int paddedSize = size * 8;
+	while (paddedSize % 5 != 0) {
+		paddedSize++;
+	}
+
+	i = 0;
+	int counter, writeCounter;
+	int curBitStreamCounter = 0;
+
+	//char *original = (char*) calloc(40, sizeof(char));
+	char original[40] = {0};
+	//char *originalPtr = original;
+	while ((i = fgetc(input)) != EOF) {
+		original[counter] = i;
+		counter++;
+		if (counter >= 40) {
+			// begin processing for output
+
+			int curBitStream[320] = {0};
+
+			for (writeCounter = 0; writeCounter < 40; writeCounter++) {
+
+				char temp = original[writeCounter];
+
+				curBitStream[curBitStreamCounter] = (temp >> 4) & 1;
+				curBitStreamCounter++;
+				curBitStream[curBitStreamCounter] = (temp >> 3) & 1;
+				curBitStreamCounter++;
+				curBitStream[curBitStreamCounter] = (temp >> 2) & 1;
+				curBitStreamCounter++;
+				curBitStream[curBitStreamCounter] = (temp >> 1) & 1;
+				curBitStreamCounter++;
+				curBitStream[curBitStreamCounter] = (temp >> 0) & 1;
+				curBitStreamCounter++;
+
+			}
+
+			printf("Current bitstream: ");
+
+			int trash;
+			for (trash = 0; trash < 320; trash++) {
+				printf("%d|", curBitStream[trash]);
+			}
+			printf("\n");
+		}
+		counter = 0;
+		memset(original, 0, sizeof(original));
+		//putchar(i);
+		//printf("\n");
+	}
+
+	/*
+
+	 #include <stdio.h>
+
+int main(void)
+{
+    FILE *fp;
+    int c;
+
+    fp = fopen("datafile.txt", "r"); // error check this!
+
+    // this while-statement assigns into c, and then checks against EOF:
+
+    while((c = fgetc(fp)) != EOF) {
+        if (c == 'b') {
+            putchar(c);
+        }
+    }
+
+    fclose(fp);
+
+    return 0;
+}
+
+	 */
+
+}
+
+int main(int argc, char *argv[]) {
+
+	encode();
+	//decode();
+	//decodeV2();
+
+	//printf("%s\n", argv[0]);
+	//printf("%s\n", argv[1]);
+
+
+	return 1;	// FIX LATER
+	// 01000 11001 10111 10111 01010 11100 10001 00000 01110 01101 10001 10110 11110 11100 10011 00101 00001 010
+	//     I	 Z	   X     X     K     2     R     A     O     N     R     W     4     2     T     F     B   I (pad)
+	//     8    25    23    23    10    28    17     0    14    13    17    22    30    28    19     5     1   8
+	// 01000110 01101111 01110101 01110010 00100000 01110011 01100011 01101111 01110010 01100101 00001010
+	//        F		   o		u		 r		 sp		   S		c		 o		  r		   e	   \n
+
+}

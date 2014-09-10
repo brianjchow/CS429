@@ -1,0 +1,80 @@
+01:56:17 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./Instructor\ Solutions/5bit.o  ./Instructor\ Solutions/5bit2.o  ./Instructor\ Solutions/5bitc1.o  ./5bit.o   
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+./Instructor Solutions/5bit2.o: In function `encode':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit2.c:25: multiple definition of `encode'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:28: first defined here
+./Instructor Solutions/5bit2.o: In function `scanargs':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit2.c:38: multiple definition of `scanargs'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:62: first defined here
+./Instructor Solutions/5bit2.o: In function `main':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit2.c:68: multiple definition of `main'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:92: first defined here
+./Instructor Solutions/5bit2.o: In function `print_byte':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit2.c:114: multiple definition of `print_byte'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:138: first defined here
+./Instructor Solutions/5bit2.o: In function `DoIt':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit2.c:144: multiple definition of `DoIt'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:243: first defined here
+./Instructor Solutions/5bit2.o: In function `encode':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit2.c:25: multiple definition of `debug'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:28: first defined here
+./Instructor Solutions/5bit2.o: In function `encode':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit2.c:25: multiple definition of `decode'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:28: first defined here
+./Instructor Solutions/5bit2.o: In function `encode':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit2.c:25: multiple definition of `number_of_chars'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:28: first defined here
+./Instructor Solutions/5bitc1.o: In function `encode':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bitc1.c:25: multiple definition of `encode'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:28: first defined here
+./Instructor Solutions/5bitc1.o: In function `scanargs':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bitc1.c:38: multiple definition of `scanargs'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:62: first defined here
+./Instructor Solutions/5bitc1.o: In function `main':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bitc1.c:68: multiple definition of `main'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:92: first defined here
+./Instructor Solutions/5bitc1.o: In function `print_byte':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bitc1.c:114: multiple definition of `print_byte'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:138: first defined here
+./Instructor Solutions/5bitc1.o: In function `DoIt':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bitc1.c:144: multiple definition of `DoIt'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:243: first defined here
+./Instructor Solutions/5bitc1.o: In function `encode':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bitc1.c:25: multiple definition of `debug'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:28: first defined here
+./Instructor Solutions/5bitc1.o: In function `encode':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bitc1.c:25: multiple definition of `decode'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:28: first defined here
+./Instructor Solutions/5bitc1.o: In function `encode':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bitc1.c:25: multiple definition of `number_of_chars'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:28: first defined here
+./5bit.o: In function `scanargs':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../5bit.c:37: multiple definition of `scanargs'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:62: first defined here
+./5bit.o: In function `encode':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../5bit.c:60: multiple definition of `encode'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:28: first defined here
+./5bit.o: In function `decode':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../5bit.c:189: multiple definition of `decode'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:28: first defined here
+./5bit.o: In function `main':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../5bit.c:237: multiple definition of `main'
+makefile:30: recipe for target `Lab 2.exe' failed
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:92: first defined here
+./5bit.o: In function `remember_string':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../5bit.c:23: multiple definition of `debug'
+./Instructor Solutions/5bit.o:/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../Instructor Solutions/5bit.c:28: first defined here
+collect2: error: ld returned 1 exit status
+make: *** [Lab 2.exe] Error 1
+
+01:56:19 Build Finished (took 1s.341ms)
+

@@ -1,0 +1,1136 @@
+14:01:31 **** Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:48:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:01:42 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c: In function 'main':
+../5bit.c:51:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:02:14 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:02:20 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:02:21 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:02:22 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:02:23 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:02:24 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:02:25 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:02:26 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:02:27 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:02:28 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:02:29 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:02:44 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c: In function 'main':
+../5bit.c:51:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:03:32 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:03:45 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:03:52 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:06:06 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+14:06:16 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:50:17 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:49:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:51:17: warning: character constant too long for its type [enabled by default]
+  char str[32] = 'Four score and seven years ago';
+                 ^
+../5bit.c:51:2: error: invalid initializer
+  char str[32] = 'Four score and seven years ago';
+  ^
+make: *** [5bit.o] Error 1
+subdir.mk:18: recipe for target `5bit.o' failed
+14:51:55 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:49:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:53:24 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:49:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:55:2: error: 'for' loop initial declarations are only allowed in C99 mode
+  for (int i = 0; i < strlen(static_str); i++) {
+  ^
+../5bit.c:55:2: note: use option -std=c99 or -std=gnu99 to compile your code
+../5bit.c:56:3: warning: format '%s' expects argument of type 'char *', but argument 2 has type 'int' [-Wformat=]
+   printf("%s", static_str[i]);
+   ^
+../5bit.c:56:3: warning: format '%s' expects argument of type 'char *', but argument 2 has type 'int' [-Wformat=]
+subdir.mk:18: recipe for target `5bit.o' failed
+make: *** [5bit.o] Error 1
+14:53:41 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:49:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:57:3: warning: format '%s' expects argument of type 'char *', but argument 2 has type 'int' [-Wformat=]
+   printf("%s", static_str[i]);
+   ^
+../5bit.c:57:3: warning: format '%s' expects argument of type 'char *', but argument 2 has type 'int' [-Wformat=]
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:53:54 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:49:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:57:3: warning: format '%s' expects argument of type 'char *', but argument 2 has type 'int' [-Wformat=]
+   printf("%s", static_str[i]);
+   ^
+../5bit.c:57:3: warning: format '%s' expects argument of type 'char *', but argument 2 has type 'int' [-Wformat=]
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:55:53 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:49:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:56:01 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:49:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:58:20 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:49:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:59:56 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:49:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:07:01 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:49:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:07:14 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:49:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:17:30 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c: In function 'test':
+../5bit.c:54:10: warning: implicit declaration of function 'exit' [-Wimplicit-function-declaration]
+          exit(1);
+          ^
+../5bit.c:54:10: warning: incompatible implicit declaration of built-in function 'exit' [enabled by default]
+../5bit.c: At top level:
+../5bit.c:72:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:80:7: warning: unused variable 'temp' [-Wunused-variable]
+   int temp = (int) str[i];
+       ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:17:42 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c: In function 'test':
+../5bit.c:54:10: warning: implicit declaration of function 'exit' [-Wimplicit-function-declaration]
+          exit(1);
+          ^
+../5bit.c:54:10: warning: incompatible implicit declaration of built-in function 'exit' [enabled by default]
+../5bit.c: At top level:
+../5bit.c:72:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:80:7: warning: unused variable 'temp' [-Wunused-variable]
+   int temp = (int) str[i];
+       ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:18:37 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:73:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:81:7: warning: unused variable 'temp' [-Wunused-variable]
+   int temp = (int) str[i];
+       ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:19:05 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+make: Nothing to be done for `all'.
+15:28:20 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c: In function 'printstringasbinary':
+../5bit.c:84:9: warning: implicit declaration of function 'itoa' [-Wimplicit-function-declaration]
+         itoa(*s, output, 2);
+         ^
+../5bit.c: At top level:
+../5bit.c:95:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:104:7: warning: unused variable 'temp' [-Wunused-variable]
+   int temp = (int) str[i];
+       ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+./5bit.o: In function `printstringasbinary':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../5bit.c:84: undefined reference to `itoa'
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../5bit.c:84:(.text+0x125): relocation truncated to fit: R_X86_64_PC32 against undefined symbol `itoa'
+collect2: error: ld returned 1 exit status
+makefile:29: recipe for target `Lab 2.exe' failed
+make: *** [Lab 2.exe] Error 1
+15:41:07 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:127:7: error: array size missing in 's'
+  char s[];
+       ^
+subdir.mk:18: recipe for target `5bit.o' failed
+make: *** [5bit.o] Error 1
+15:41:38 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:128:6: warning: 's' is used uninitialized in this function [-Wuninitialized]
+  itoa(70, s);
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:42:02 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:43:49 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:44:16 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:129:2: warning: implicit declaration of function 'print' [-Wimplicit-function-declaration]
+  print("%s\n", s);
+  ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+./5bit.o: In function `main':
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../5bit.c:129: undefined reference to `print'
+/cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug/../5bit.c:129:(.text+0x28b): relocation truncated to fit: R_X86_64_PC32 against undefined symbol `print'
+makefile:29: recipe for target `Lab 2.exe' failed
+collect2: error: ld returned 1 exit status
+make: *** [Lab 2.exe] Error 1
+15:44:27 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:44:54 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:129:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'char *' [-Wformat=]
+  printf("%d\n", s);
+  ^
+../5bit.c:129:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'char *' [-Wformat=]
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:45:01 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:129:2: warning: unknown conversion type character 'b' in format [-Wformat=]
+  printf("%b\n", s);
+  ^
+../5bit.c:129:2: warning: too many arguments for format [-Wformat-extra-args]
+../5bit.c:129:2: warning: unknown conversion type character 'b' in format [-Wformat=]
+../5bit.c:129:2: warning: too many arguments for format [-Wformat-extra-args]
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:49:39 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:129:2: warning: unknown conversion type character 'b' in format [-Wformat=]
+  printf("%b\n", s);
+  ^
+../5bit.c:129:2: warning: too many arguments for format [-Wformat-extra-args]
+../5bit.c:129:2: warning: unknown conversion type character 'b' in format [-Wformat=]
+../5bit.c:129:2: warning: too many arguments for format [-Wformat-extra-args]
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:49:45 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:50:19 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:53:19 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:124:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:133:10: error: conflicting types for 'str'
+     char str[80];
+          ^
+../5bit.c:126:7: note: previous definition of 'str' was here
+  char str[] = "Four score";
+       ^
+make: *** [5bit.o] Error 1
+subdir.mk:18: recipe for target `5bit.o' failed
+15:53:31 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:124:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:53:54 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:57:55 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:144:3: warning: passing argument 1 of 'puts' from incompatible pointer type [enabled by default]
+   puts(output);
+   ^
+In file included from /usr/include/stdio.h:29:0,
+                 from ../5bit.c:42:
+/usr/include/stdio.h:194:5: note: expected 'const char *' but argument is of type 'int *'
+ int _EXFUN(puts, (const char *));
+     ^
+../5bit.c:142:20: warning: 'c' may be used uninitialized in this function [-Wmaybe-uninitialized]
+     output[i] = (c >> i) & 1;
+                    ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:58:24 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+../5bit.c: In function 'main':
+../5bit.c:142:22: error: invalid operands to binary >> (have 'char *' and 'int')
+     output[i] = (str >> i) & 1;
+                      ^
+../5bit.c:144:3: warning: passing argument 1 of 'puts' from incompatible pointer type [enabled by default]
+   puts(output);
+   ^
+In file included from /usr/include/stdio.h:29:0,
+                 from ../5bit.c:42:
+/usr/include/stdio.h:194:5: note: expected 'const char *' but argument is of type 'int *'
+ int _EXFUN(puts, (const char *));
+     ^
+../5bit.c:139:8: warning: unused variable 'c' [-Wunused-variable]
+   char c;
+        ^
+subdir.mk:18: recipe for target `5bit.o' failed
+make: *** [5bit.o] Error 1
+16:14:21 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+16:14:41 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+16:14:53 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+16:15:16 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+16:15:32 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+16:15:57 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+16:16:36 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../5bit.c:123:6: warning: return type of 'main' is not 'int' [-Wmain]
+ void main() {
+      ^
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+13:15:49 **** Build of configuration Debug for project Lab 2 ****
+make all 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Fatass\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Fatass/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+Finished building target: Lab 2.exe
+ 
+14:02:14 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+14:02:53 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:56:44 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Fatass\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Fatass/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+15:57:23 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Fatass\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Fatass/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 

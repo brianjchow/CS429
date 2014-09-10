@@ -1,0 +1,54 @@
+13:24:40 **** Build of configuration Debug for project Tester ****
+make all 
+Building file: ../src/Tester.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Tester.d" -MT"src/Tester.d" -o "src/Tester.o" "../src/Tester.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Brian\Dropbox\CS 429\Labs\Tester\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Brian/Dropbox/CS 429/Labs/Tester/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+../src/Tester.c:28:16: warning: useless storage class specifier in empty declaration [enabled by default]
+ typedef struct iterator;
+                ^
+../src/Tester.c: In function 'newNode':
+../src/Tester.c:50:43: error: conversion to non-scalar type requested
+  out = (struct Node) malloc(sizeof(struct Node));
+                                           ^
+../src/Tester.c:52:12: warning: comparison between pointer and integer [enabled by default]
+  if (*data != NULL) {
+            ^
+../src/Tester.c:53:12: warning: assignment makes pointer from integer without a cast [enabled by default]
+   out.data = *data;
+            ^
+../src/Tester.c: In function 'add':
+../src/Tester.c:62:13: error: invalid operands to binary == (have 'Node' and 'void *')
+  if (*toAdd == NULL) {
+             ^
+../src/Tester.c:65:12: error: invalid operands to binary == (have 'LinkedList' and 'void *')
+  if (*list == NULL) {
+            ^
+../src/Tester.c:66:16: error: incompatible types when assigning to type 'struct Node *' from type 'Node'
+   (*list).head = *toAdd;
+                ^
+../src/Tester.c:67:16: error: incompatible types when assigning to type 'struct Node *' from type 'Node'
+   (*list).tail = *toAdd;
+                ^
+../src/Tester.c:68:15: error: request for member 'data' in something not a structure or union
+   (*list).head.data = (*toAdd).data;
+src/subdir.mk:18: recipe for target `src/Tester.o' failed
+               ^
+../src/Tester.c:69:15: error: request for member 'data' in something not a structure or union
+   (*list).tail.data = (*toAdd).data;
+               ^
+../src/Tester.c:74:15: error: request for member 'next' in something not a structure or union
+   (*list).tail.next = *toAdd;
+               ^
+../src/Tester.c:75:16: error: incompatible types when assigning to type 'struct Node *' from type 'Node'
+   (*list).tail = *toAdd;
+                ^
+make: *** [src/Tester.o] Error 1
+
+13:24:40 Build Finished (took 224ms)
+

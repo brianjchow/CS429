@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Lab 2/5bitV2.c&apos; to &apos;5bitDeprecated.c&apos;" description="Rename resource &apos;5bitV2.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="5bitV2.c" name="5bitDeprecated.c" stamp="1380137637101" updateReferences="true"/>
+</session>

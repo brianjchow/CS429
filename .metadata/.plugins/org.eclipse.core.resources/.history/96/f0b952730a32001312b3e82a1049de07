@@ -1,0 +1,197 @@
+/*
+ ============================================================================
+ Name        : LinkedList.c
+ Author      : 
+ Version     :
+ Copyright   : Your copyright notice
+ Description : Hello World in C, Ansi-style
+ ============================================================================
+ */
+
+// a simpler linked list for Lab 3
+// each node holds three strings and a pointer to the next node
+// singly-linked, non-circular
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+//typedef struct Node Node;
+//typedef struct LinkedList LinkedList;
+
+struct Node {
+	char *name;
+	char *property;
+	char *value;
+	struct Node *next;
+};
+
+struct LinkedList {
+	struct Node *head;
+	struct Node *tail;
+	int size;
+};
+
+// make a new Node
+struct Node *newNode(void) {
+	return (struct Node *) malloc(sizeof(struct Node));
+}
+
+// make a new LinkedList
+struct LinkedList *newLinkedList(void) {
+	return (struct LinkedList *) malloc(sizeof(struct LinkedList));
+}
+
+// no error checking implemented here
+void add(char *name, char *property, char *value, struct LinkedList *list) {
+
+	// should not occur, but just in case
+	if (list == NULL) {
+		list = newLinkedList();
+		if (list == NULL) {
+			exit(-1);
+		}
+		else {
+			(*list).head = NULL;
+			(*list).tail = NULL;
+			(*list).size = 0;
+		}
+	}
+
+	struct Node *toAdd = newNode();
+	if (toAdd == NULL) {
+		// out of memory
+		exit(-1);
+	}
+	else {
+		// initialize variables
+		(*toAdd).name = name;
+		(*toAdd).property = property;
+		(*toAdd).value = value;
+		(*toAdd).next = NULL;
+	}
+
+	// append to end of list
+	if ((*list).size == 0) {
+		// list is empty
+		(*list).head = toAdd;
+		(*list).tail = toAdd;
+		(*list).size++;
+	}
+	else {
+		(list->tail)->next = toAdd;
+		(*list).tail = toAdd;
+		(*list).size += 1;
+	}
+}
+
+int main(void) {
+
+	struct LinkedList *list = newLinkedList();
+	if (list == NULL) {
+		// out of memory
+		exit(-1);
+	}
+	else {
+		// initialize variables
+		(*list).head = NULL;
+		(*list).tail = NULL;
+		(*list).size = 0;
+	}
+
+	char *name = "Corporations";
+	char *property = "Apple";
+	char *value = "iPod";
+	add(name, property, value, list);
+	printf("------------------------------------------------------------------------------------------------------------------\n");
+	printf("Added name = %s, property = %s, value = %s\n", name, property, value);
+	printf("Current size of list: %d\n\n", (*list).size);
+
+	name = "Corporations";
+	property = "Apple";
+	value = "Mac";
+	add(name, property, value, list);
+	printf("------------------------------------------------------------------------------------------------------------------\n");
+	printf("Added name = %s, property = %s, value = %s\n", name, property, value);
+	printf("Current size of list: %d\n\n", (*list).size);
+
+	name = "Fruits";
+	property = "Banana";
+	value = "Yellow";
+	add(name, property, value, list);
+	printf("------------------------------------------------------------------------------------------------------------------\n");
+	printf("Added name = %s, property = %s, value = %s\n", name, property, value);
+	printf("Current size of list: %d\n\n", (*list).size);
+
+	name = "Fruits";
+	property = "Granny Smith Apple";
+	value = "Green";
+	add(name, property, value, list);
+	printf("------------------------------------------------------------------------------------------------------------------\n");
+	printf("Added name = %s, property = %s, value = %s\n", name, property, value);
+	printf("Current size of list: %d\n\n", (*list).size);
+
+	name = "Corporations";
+	property = "Microsoft";
+	value = "Windows";
+	add(name, property, value, list);
+	printf("------------------------------------------------------------------------------------------------------------------\n");
+	printf("Added name = %s, property = %s, value = %s\n", name, property, value);
+	printf("Current size of list: %d\n\n", (*list).size);
+
+	name = "Fruits";
+	property = "Tomato";
+	value = "Red";
+	add(name, property, value, list);
+	printf("------------------------------------------------------------------------------------------------------------------\n");
+	printf("Added name = %s, property = %s, value = %s\n", name, property, value);
+	printf("Current size of list: %d\n\n", (*list).size);
+
+	printf("------------------------------------------------------------------------------------------------------------------\n");
+	printf("Testing that next was set correctly (format is [name, property, value]):\n");
+	int counter = 0;
+	struct Node *temp = (*list).head;
+	while (temp != NULL) {
+		printf("[%s, %s, %s]", temp->name, temp->property, temp->value);
+		if (counter < (*list).size - 1) {
+			printf("---");
+		}
+		temp = temp->next;
+		counter++;
+	}
+
+	printf("\n\n------------------------------------------------------------------------------------------------------------------\n");
+	printf("Fetching all property/value combos for name = 'Corporation':\n");
+	counter = 0;
+	char *delimit = "Corporations";
+	temp = (*list).head;
+	while (temp != NULL) {
+		if (strcmp(delimit, temp->name) == 0) {
+			printf("[%s, %s, %s]", temp->name, temp->property, temp->value);
+			if (counter < (*list).size - 1) {
+				printf("---");
+			}
+		}
+		temp = temp->next;
+		counter++;
+	}
+
+	printf("\n\n------------------------------------------------------------------------------------------------------------------\n");
+	printf("Fetching all property/value combos for name = 'Fruits':\n");
+	counter = 0;
+	delimit = "Fruits";
+	temp = (*list).head;
+	while (temp != NULL) {
+		if (strcmp(delimit, temp->name) == 0) {
+			printf("[%s, %s, %s]", temp->name, temp->property, temp->value);
+			if (counter < (*list).size - 1) {
+				printf("---");
+			}
+		}
+		temp = temp->next;
+		counter++;
+	}
+
+	return EXIT_SUCCESS;
+}

@@ -1,0 +1,11 @@
+Command
+tar -xf selftestv2.tar.gz -C ~/tmp
+
+Second, copy your 5bit.c to ~/tmp/selftest, and build it
+cp -a 5bit.c ~/tmp/selftest
+cd ~/tmp/selftest
+make
+
+Third, run the testing script.
+./test.sh
+Expected results

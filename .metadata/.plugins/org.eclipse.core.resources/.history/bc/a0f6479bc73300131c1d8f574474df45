@@ -1,0 +1,207 @@
+/*
+
+ 	 General procedure for reading input file:
+ 	 	 - use int getc(FILE *stream) to read until \n is encountered; use a counter to count the number of characters read
+ 	 	 - once \n is encountered, use char *fgets(char *s, int n, FILE *stream) to read and copy that line to an array
+ 	 	 - process that string
+ 	 	 - reset counter to 0
+ 	 	 - repeat procedure until getc() reads in EOF
+ 	 	 - fgets(): "reads at most the next n - 1 characters into the array s, stopping if a newline is encountered; the newline is included in the array" (K&R 247)
+
+ 	 Main procedure
+
+ 	 	 - SOME PROCEDURE FOR CHECKING COMMAND LINE INPUT SYNTAX
+
+ 	 	 - begin reading facts file using general procedure above
+ 	 	 - check if string returned by reading is valid
+ 	 	 	 - check that it has an 'F' (case-insensitive), a colon, and an equals sign, in that order
+ 	 	 	 - if invalid
+ 	 	 	 	 - print out string skipped statement to standard output
+ 	 	 	 	 - discard string; return to reading facts file
+ 	 	 	 - else
+ 	 	 	 	 - strip string of excess whitespace
+ 	 	 	 	 	 - strip any whitespace before and after 'F'
+ 	 	 	 	 	 - strip any whitespace before and after the first colon
+ 	 	 	 	 	 - strip any whitespace before and after the first equals sign after the colon
+ 	 	 	 - send string to procedure for storing
+
+		 - if questions file was provided
+		 	 - begin reading questions file using general procedure above
+		 	 - check if string returned by reading is valid
+		 	 	 - check that it has a 'Q' (case-insensitive) and a colon, in that order
+		 	 	 - if invalid
+		 	 	 	 - print out string skipped statement to standard output
+		 	 	 	 - discard string; return to reading questions file
+		 	 	 - else
+		 	 	 	 - strip string of excess whitespace
+		 	 	 	 	 - strip any whitespace before and after 'Q'
+		 	 	 	 	 - strip any whitespace before and after the first colon
+		 	 	 	 - send string to procedure for retrieving
+		 - else (no questions file was provided)
+		 	 - begin reading from standard input
+		 	 - check if string returned by reading is valid
+		 	 	 - check that it has a 'Q' (case-insensitive) and a colon, in that order
+		 	 	 - if invalid
+		 	 	 	 - print out string skipped statement to standard output
+		 	 	 	 - discard string; return to reading questions file
+		 	 	 - else
+		 	 	 	 - strip string of excess whitespace
+		 	 	 	 	 - strip any whitespace before and after 'Q'
+		 	 	 	 	 - strip any whitespace before and after the first colon
+		 	 	 	 - send string to procedure for retrieving
+
+ 	 General procedure for storing
+ 	 	 - separate string into the three fields, skipping the first letter in the string ('F'); store each field in a char array
+ 	 	 - send the three char arrays and a LinkedList to add()
+ 	 	 - return 1 if stored successfully, exit(-1) otherwise (?????????????????????????????)
+
+ 	 General procedure for retrieving
+ 	 	 - separate string into the two fields, skipping the first letter in the string ('Q'); store each field in a char array
+ 	 	 - send the two char arrays and the LinkedList with facts to get()
+
+ */
+
+/*
+ 	 Possible bugfixes
+ 	 	 - in store and retrieveFact: strncpy doesn't add in the \0 character to terminate the string; modify?
+ 	 	 	 the name/prop/value arrays have one more space, but I didn't fill them in with \0; need to check their contents first
+ */
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include facts.c
+
+// *****************************************************************************************************************************************************************************
+
+// ---------------------
+// begin test procedures
+
+	void testStoreAndRetrieveFact() {
+		LinkedList *ll = newLinkedList();
+		if (ll == NULL) {
+			exit(-1);
+		}
+		else {
+			(*ll).head = NULL;
+			(*ll).tail = NULL;
+			(*ll).size = 0;
+		}
+
+		char *string = "FCDC6600:number_registers=24";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+
+		string = "     F     CDC 600     :     opcode_bits     =     6";	// colon @ 23, equals @ 45, strlen 52
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+
+		string = "F #$%*#)==(: ndkje()[]:: = 209374h9:==:383945hj";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		string = "F IBM360      :       opcode_bits        =       8     ";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		string = "F PDP11: opcode_bits=4,8,10";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+		string = "F:=";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		string = "   F     :                     =                         ";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		string = " F =:";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		string = ":f=";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		// begin testing retrieveFact
+
+		fprintf(stdout, "\nNow testing retrieveFact...\n\n");
+
+		string = "QCDC6600:number_registers";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "          Q            CDC6600  : number_registers          ";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'\n\t", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "Q   CDC 600   :opcode_bits";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "Q IBM360 : opcode_bits";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "Q #$%*#)==(                                : ndkje()[]:: ";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "F IBM360 : opcode_bits";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "q IBM360 : opcode_bits";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "Q:";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "q             :                          ";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "Q IBM360 : owner        ";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		freeLinkedList(ll);
+	}
+
+// end test procedures
+// -------------------
+
+// *****************************************************************************************************************************************************************************

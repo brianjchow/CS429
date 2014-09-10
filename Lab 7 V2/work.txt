@@ -1,0 +1,712 @@
+79.66.74.71.0.4.131.0.0.0.40.0.1.0.
+7.208.240.34.235.128.32.0.235.192.252.33.234.27.184.52.180.16.234.27.184.32.128.2.160.32.252.1.128.3.228.3.242.0.180.9.0.1.0.0.0.0.0.0.0.0.0.0.0.0.0.22.0.22.0.
+0.48.132.28.148.29.132.30.224.129.24.31.154.29.176.29.232.1.241.0.180.35.128.29.240.2.144.29.138.29.168.32.32.28.243.0.180.42.0.2.0.0.196.51.244.33.244.1.224.129.249.64.182.51.232.129.228.145.251.0.180.54.176.51.182.51.
+
+FIRST LINE
+O.B.J.G||0.4||131||0.0|0.40|0.1|0
+- read in OBJG magic "number"
+- next two bytes store the 16-bit starting address for the object file
+	- so 00000000.00000100 == start at address 0x04 == EP
+- every two numbers after that represents a block
+	- each block is a set of 2 bytes
+	- the first byte (here, 131) is the number of bytes in the entire block, INCLUDING the first byte
+	- after this first byte will be an address (here, 0.0)
+	- starting at that address, store the blocks, continuing word after word, until we have exhausted the number of BYTES given at the beginning of the block
+		- so, store (0.40), then (0.1), etc
+- do we ignore \n characters?
+
+FULL.OBJ - OLD VERSION
+79, 66, 74, 71, 16, 2, 9, 0, 64, 0, 0, 0, 64, 16, 62, 177, 16, 0, 255, 255, 255, 0, 0, 0, 129, 0
+OBJG|16.2|9|0.64|0.0|0.64|16.62||177|16.62|177.16|16.0
+EP == 16.2 == 00010000.00000010
+BLOCK 1 HAS LENGTH 9 AND STARTS AT 0.64 == 00000000.01000000 == 0x0040
+BLOCK 2 HAS LENGTH 177 AND STARTS AT 16.62 == 00010000.00111110 == 4158 == 0x103E
+
+FULL.OBJ - NEW VERSION
+79, 66, 74, 71, 16, 2, 9, 0, 64, 0, 0, 0, 64, 16, 69, 193, 16, 0, 255, 255, 255, 0, 0, 0, 129, 0, 235, 128, 141, 1, 237, 219, 186, 66, 240, 33, 244, 34, 248, 40, 252, 42, 17
+OBJG|16.2|9|0.64|0.0|0.64|16.69||193|16.0|255.255|255.0|0.0|129.0|235.128|141.1|237.219|186.66|240.33|244.34|248.40|252.42
+EP == 16.2 == 00010000.00000010
+BLOCK 1 HAS LENGTH 9 AND STARTS AT 0.64
+BLOCK 2 HAS LENGTH 193 AND STARTS AT 16.0
+...
+0, 16, 0, 170, 82, 127, 255, 128, 0, 16, 89, 0, 68, 0, 111, 0, 110, 0, 101, 0, 0, 0
+ADDRESS: 0x INSTR: 00000000.00010000
+
+
+PRIME.OBJ
+79, 66, 74, 71, 0, 4, 131, 0, 0, 0, 40, 0, 1, 0, 7, 208, 240, 34, 235, 128, 32, 0, 235, 192, 252, 33, 234, 27, 184
+OBJG|0.4|131|0.0|0.40|0.1|0.7|208.240|34.235|128.32|0.235|192.252|33.234
+EP == 0.4 == 0000000000000100 = 0x0004
+BLOCK 1 HAS LENGTH 131 BYTES AND STARTS AT 0.0
+ADDRESS 0: STORE 0.40
+ADDRESS 1: STORE 0.1
+ADDRESS 2: STORE 0.7
+ADDRESS 3: STORE 208.240
+ADDRESS 4: STORE 34.235
+ADDRESS 5: STORE 128.32
+ADDRESS 6: STORE 0.235
+ADDRESS 7: STORE 192.252
+ADDRESS 8: STORE 33.234
+
+79.66.74.71.
+0.4.		== starting address 0x04
+131.		== block size 131 bytes
+0.0.		== 0		address 4
+0.40.		== 40		address 5
+0.1.		== 1		address 6
+0.7.		== 7		address 7
+208.240.	== 53488	address 8
+34.235.		== 8939		address 9
+128.32.		== 32800	address 10
+0.235.		== 235		address 11
+192.252.	== 49404	address 12
+33.234.		== 8682		address 13
+27.184.		== 7096		address 14
+52.180.
+16.234.
+27.184.
+32.128.
+2.160.
+32.252.
+1.128.
+3.228.
+3.242.
+0.180.
+9.0.
+1.0.		== 256		(should be at address 29)
+0.0.		== 0
+0.0.		== 0
+0.0.		== 0
+0.0.		== 0
+0.0.		== 0
+0.0.		== 0
+22.0.
+22.0.
+0.48.
+132.28.
+148.29.
+132.30.
+224.129.
+24.31.
+154.29.
+176.29.
+232.1.
+241.0.
+180.35.
+128.29.
+240.2.
+144.29.
+138.29.
+168.32.
+32.28.
+243.0.
+180.42.
+0.2.
+0.0.
+196.51.
+244.33.
+244.1.
+224.129.
+249.64.
+182.51.
+232.129.
+228.145.	== 58513
+251.0.		== 64256
+180.54.		== 46134
+176.51.		== 45107
+182.51.		== 46643 (should be at address 67)
+
+
+
+
+	[ (1, 0) (2, 7) (3, 208) (4, 240) (5, 34) (6, 235) (7, 128) (8, 32) (9, 0) (10, 235) (11, 192) (12, 252) (13, 33) (14, 234) (15, 27) (16, 184) (17, 52) (18, 180) (19, 16) 
+	(20, 234) (21, 27) (22, 184) (23, 32) (24, 128) (25, 2) (26, 160) (27, 32) (384, 3) (385, 228) (386, 3) (387, 242) (388, 0) (389, 180) (390, 9) (391, 0) (392, 1) (393, 0) (394, 0) (395, 0) (396, 0) (397, 0) (398, 0) (399, 0) 
+	(400, 0) (401, 0) (402, 0) (403, 0) (404, 0) (405, 0) (406, 22) (407, 0) (408, 22) (409, 0) (410, 0) (411, 48) (412, 132) (413, 28) (414, 148) (415, 29) (416, 132) (417, 30) (418, 224) (419, 129) 
+	(420, 24) (421, 31) (422, 154) (423, 29) (424, 176) (425, 29) (426, 232) (427, 1) (428, 241) (429, 0) (430, 180) (431, 35) (432, 128) (433, 29) (434, 240) (435, 2) (436, 144) (437, 29) (438, 138) (439, 29) 
+	(440, 168) (441, 32) (442, 32) (443, 28) (444, 243) (445, 0) (446, 180) (447, 42) (448, 0) (449, 2) (450, 0) (451, 0) (452, 196) (453, 51) (454, 244) (455, 33) (456, 244) (457, 1) (458, 224) (459, 129) 
+	(460, 249) (461, 64) (462, 182) (463, 51) (464, 232) (465, 129) (466, 228) (467, 145) (468, 251) (469, 0) (470, 180) (471, 54) (472, 176) (473, 51) (474, 182) (475, 51) (476, 0) (477, 0) (478, 0) (479, 122097) 
+	(480, 0) (481, 808464432) (482, 825241648) (483, 808464433) (484, 808464432) (485, 0) (486, 0) (487, 0) (488, 0) (489, 0) (490, 0) (491, 0) (492, 0) (493, 0) (494, 0) (495, 0) (496, 0) (497, 0) (498, 0) (499, 122017) 
+	(500, 0) (501, 808464432) (502, 808464432) (503, 808464433) (504, 808464432) (505, 0) (506, 0) (507, 121985) (508, 0) (509, 808988720) (510, 808464384) (511, 808464432) (512, 808464432) (513, 0) (514, 0) (515, 121953) (516, 0) (517, 0) (518, 0) (519, 0) 
+	(520, 0) (521, 0) (522, 0) (523, 0) (524, 0) (525, 0) (526, 0) (527, 0) (528, 0) (529, 0) (530, 0) (531, 0) (532, 0) (533, 0) (534, 0) (535, 0) (536, 0) (537, 0) (538, 0) (539, 0) 
+	(540, 0) (541, 0) (542, 0) (543, 0) (544, 0) (545, 0) (546, 0) (547, 0) (548, 0) (549, 0) (550, 0) (551, 0) (552, 0) (553, 0) (554, 0) (555, 0) (556, 0) (557, 0) (558, 0) (559, 0) 
+	(560, 0) (561, 0) (562, 0) (563, 0) (564, 0) (565, 0) (566, 0) (567, 0) (568, 0) (569, 0) (570, 0) (571, 0) (572, 0) (573, 0) (574, 0) (575, 0) (576, 0) (577, 0) (578, 0) (579, 0) 
+	(580, 0) (581, 0) (582, 0) (583, 0) (584, 0) (585, 0) (586, 0) (587, 0) (588, 0) (589, 0) (590, 0) (591, 0) (592, 0) ]
+
+
+
+
+	[ (1, 0) (2, 7) (3, 208) (4, 240) (5, 34) (6, 235) (7, 128) (8, 32) (9, 0) (10, 235) (11, 192) (12, 252) (13, 33) (14, 234) (15, 27) (16, 184) (17, 52) (18, 180) (19, 16) 
+	(20, 234) (21, 27) (22, 184) (23, 32) (24, 128) (25, 2) (26, 160) (27, 32) (384, 3) (385, 228) (386, 3) (387, 242) (388, 0) (389, 180) (390, 9) (391, 0) (392, 1) (393, 0) (394, 0) (395, 0) (396, 0) (397, 0) (398, 0) (399, 0) 
+	(400, 0) (401, 0) (402, 0) (403, 0) (404, 0) (405, 0) (406, 22) (407, 0) (408, 22) (409, 0) (410, 0) (411, 48) (412, 132) (413, 28) (414, 148) (415, 29) (416, 132) (417, 30) (418, 224) (419, 129) 
+	(420, 24) (421, 31) (422, 154) (423, 29) (424, 176) (425, 29) (426, 232) (427, 1) (428, 241) (429, 0) (430, 180) (431, 35) (432, 128) (433, 29) (434, 240) (435, 2) (436, 144) (437, 29) (438, 138) (439, 29) 
+	(440, 168) (441, 32) (442, 32) (443, 28) (444, 243) (445, 0) (446, 180) (447, 42) (448, 0) (449, 2) (450, 0) (451, 0) (452, 196) (453, 51) (454, 244) (455, 33) (456, 244) (457, 1) (458, 224) (459, 129) 
+	(460, 249) (461, 64) (462, 182) (463, 51) (464, 232) (465, 129) (466, 228) (467, 145) (468, 251) (469, 0) (470, 180) (471, 54) (472, 176) (473, 51) (474, 182) (475, 51) (476, 0) (477, 0) (478, 0) (479, 122097) 
+	(480, 0) (481, 808464432) (482, 825241648) (483, 808464433) (484, 808464432) (485, 0) (486, 0) (487, 0) (488, 0) (489, 0) (490, 0) (491, 0) (492, 0) (493, 0) (494, 0) (495, 0) (496, 0) (497, 0) (498, 0) (499, 122017) 
+	(500, 0) (501, 808464432) (502, 808464432) (503, 808464433) (504, 808464432) (505, 0) (506, 0) (507, 121985) (508, 0) (509, 808988720) (510, 808464384) (511, 808464432) (512, 808464432) (513, 0) (514, 0) (515, 121953) (516, 0) (517, 0) (518, 0) (519, 0) 
+	(520, 0) (521, 0) (522, 0) (523, 0) (524, 0) (525, 0) (526, 0) (527, 0) (528, 0) (529, 0) (530, 0) (531, 0) (532, 0) (533, 0) (534, 0) (535, 0) (536, 0) (537, 0) (538, 0) (539, 0) 
+	(540, 0) (541, 0) (542, 0) (543, 0) (544, 0) (545, 0) (546, 0) (547, 0) (548, 0) (549, 0) (550, 0) (551, 0) (552, 0) (553, 0) (554, 0) (555, 0) (556, 0) (557, 0) (558, 0) (559, 0) 
+	(560, 0) (561, 0) (562, 0) (563, 0) (564, 0) (565, 0) (566, 0) (567, 0) (568, 0) (569, 0) (570, 0) (571, 0) (572, 0) (573, 0) (574, 0) (575, 0) (576, 0) (577, 0) (578, 0) (579, 0) 
+	(580, 0) (581, 0) (582, 0) (583, 0) (584, 0) (585, 0) (586, 0) (587, 0) (588, 0) (589, 0) (590, 0) (591, 0) (592, 0) ]
+
+FOR PRIME.OBJ
+PC SHOULD START AT 0X0004, WITH INSTRUCTION 0XF022
+0XF022 == 1111.0000.0010.0010 == 61474
+
+
+	//	void hlt() {
+//
+//	}
+
+	void ret() {
+
+	}
+
+	void rmri_add(int n, int regSpecifier) {
+
+	}
+
+	void rmri_sub(int n, int regSpecifier) {
+
+	}
+
+	void rmri_mul(int n, int regSpecifier) {
+
+	}
+
+	void rmri_div(int n, int regSpecifier) {
+
+	}
+
+	void rmri_and(int n, int regSpecifier) {
+
+	}
+
+	void rmri_or(int n, int regSpecifier) {
+
+	}
+
+	void rmri_xor(int n, int regSpecifier) {
+
+	}
+
+	void rmri_load(int n, int regSpecifier) {
+
+	}
+
+	void rmri_store(int n, int regSpecifier) {
+
+	}
+
+	void isz(int n) {
+
+	}
+
+	void jmp(int n) {
+
+	}
+
+	void call(int n) {
+
+	}
+
+	void push(int n) {
+
+	}
+
+	void pop(int n) {
+
+	}
+
+	void rtri_mod(int n, int regSpecifier) {
+
+	}
+
+	void rtri_add(int n, int regSpecifier) {
+
+	}
+
+	void rtri_sub(int n, int regSpecifier) {
+
+	}
+
+	void rtri_mul(int n, int regSpecifier) {
+
+	}
+
+	void rtri_div(int n, int regSpecifier) {
+
+	}
+
+	void rtri_or(int n, int regSpecifier) {
+
+	}
+
+	void rtri_xor(int n, int regSpecifier) {
+
+	}
+
+	void sm(int regSpecifier) {
+		// skip if (register) is negative (sign bit is 1)
+		if (regSpecifier == A_REG_SPECIFIER) {
+			if (aReg[0] == ASCII_ONE) {
+				skipFlag = ASCII_ONE;
+			}
+		}
+		else if (regSpecifier == B_REG_SPECIFIER) {
+			if (bReg[0] == ASCII_ONE) {
+				skipFlag = ASCII_ONE;
+			}
+		}
+		else if (regSpecifier == C_REG_SPECIFIER) {
+			if (cReg[0] == ASCII_ONE) {
+				skipFlag = ASCII_ONE;
+			}
+		}
+		else {
+			if (dReg[0] == ASCII_ONE) {
+				skipFlag = ASCII_ONE;
+			}
+		}
+	}
+
+	void sz(int regSpecifier) {
+		// skip if (register) is zero
+		if (regSpecifier == A_REG_SPECIFIER) {
+			if (binToDec(aReg) == 0) {
+				skipFlag = ASCII_ONE;
+			}
+		}
+		else if (regSpecifier == B_REG_SPECIFIER) {
+			if (binToDec(bReg) == 0) {
+				skipFlag = ASCII_ONE;
+			}
+		}
+		else if (regSpecifier == C_REG_SPECIFIER) {
+			if (binToDec(aReg) == 0) {
+				skipFlag = ASCII_ONE;
+			}
+		}
+		else {
+			if (binToDec(dReg) == 0) {
+				skipFlag = ASCII_ONE;
+			}
+		}
+	}
+
+	void snl() {
+		// skip if link bit is non-zero
+		if (link == ASCII_ONE) {
+			skipFlag = ASCII_ONE;
+		}
+	}
+
+	void rss() {
+		// reverse skip sense; flip skip flag bit
+		if (skipFlag == ASCII_ZERO) {
+			skipFlag = ASCII_ONE;
+		}
+		else {
+			skipFlag = ASCII_ZERO;
+		}
+	}
+
+	void cl(int regSpecifier) {
+		// clear (register)
+		if (regSpecifier == A_REG_SPECIFIER) {
+			int regInt = binToDec(aReg);
+			if (regInt == (MAX_NUM_ELEMENTS - 1)) {
+				int i;
+				for (i = 0; i < (REG_LEN); i++) {
+					aReg[i] = ASCII_ZERO;
+				}
+			}
+		}
+		else if (regSpecifier == B_REG_SPECIFIER) {
+			int regInt = binToDec(bReg);
+			if (regInt == (MAX_NUM_ELEMENTS - 1)) {
+				int i;
+				for (i = 0; i < (REG_LEN); i++) {
+					bReg[i] = ASCII_ZERO;
+				}
+			}
+		}
+		else if (regSpecifier == C_REG_SPECIFIER) {
+			int regInt = binToDec(cReg);
+			if (regInt == (MAX_NUM_ELEMENTS - 1)) {
+				int i;
+				for (i = 0; i < (REG_LEN); i++) {
+					cReg[i] = ASCII_ZERO;
+				}
+			}
+		}
+		else {
+			int regInt = binToDec(dReg);
+			if (regInt == (MAX_NUM_ELEMENTS - 1)) {
+				int i;
+				for (i = 0; i < (REG_LEN); i++) {
+					dReg[i] = ASCII_ZERO;
+				}
+			}
+		}
+	}
+
+	void cll() {
+		// clear link bit
+		link = ASCII_ZERO;
+	}
+
+	void cm(int regSpecifier) {
+		// complement (register)
+		if (regSpecifier == A_REG_SPECIFIER) {
+			int i;
+			for (i = 0; i < REG_LEN; i++) {
+				if (aReg[i] == ASCII_ZERO) {
+					aReg[i] = ASCII_ONE;
+				}
+				else {
+					aReg[i] = ASCII_ZERO;
+				}
+			}
+		}
+		else if (regSpecifier == B_REG_SPECIFIER) {
+			int i;
+			for (i = 0; i < REG_LEN; i++) {
+				if (bReg[i] == ASCII_ZERO) {
+					bReg[i] = ASCII_ONE;
+				}
+				else {
+					bReg[i] = ASCII_ZERO;
+				}
+			}
+		}
+		else if (regSpecifier == C_REG_SPECIFIER) {
+			int i;
+			for (i = 0; i < REG_LEN; i++) {
+				if (cReg[i] == ASCII_ZERO) {
+					cReg[i] = ASCII_ONE;
+				}
+				else {
+					cReg[i] = ASCII_ZERO;
+				}
+			}
+		}
+		else {
+			int i;
+			for (i = 0; i < REG_LEN; i++) {
+				if (dReg[i] == ASCII_ZERO) {
+					dReg[i] = ASCII_ONE;
+				}
+				else {
+					dReg[i] = ASCII_ZERO;
+				}
+			}
+		}
+	}
+
+	void cml() {
+		// complement link bit
+		if (link == ASCII_ZERO) {
+			link = ASCII_ONE;
+		}
+		else {
+			link = ASCII_ZERO;
+		}
+	}
+
+	void dc(int regSpecifier) {
+		// decrement (register) by one
+		if (regSpecifier == A_REG_SPECIFIER) {
+			int regInt = binToDec(aReg);
+			if (regInt == 0) {
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					aReg[i] = ASCII_ONE;
+				}
+				if (link == ASCII_ZERO) {
+					link = ASCII_ONE;
+				}
+				else {
+					link = ASCII_ZERO;
+				}
+			}
+			else {
+				regInt--;
+				char *temp = decToBin(regInt);
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					aReg[i] = temp[i];
+				}
+				free(temp);
+			}
+		}
+		else if (regSpecifier == B_REG_SPECIFIER) {
+			int regInt = binToDec(bReg);
+			if (regInt == 0) {
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					bReg[i] = ASCII_ONE;
+				}
+				if (link == ASCII_ZERO) {
+					link = ASCII_ONE;
+				}
+				else {
+					link = ASCII_ZERO;
+				}
+			}
+			else {
+				regInt--;
+				char *temp = decToBin(regInt);
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					bReg[i] = temp[i];
+				}
+				free(temp);
+			}
+		}
+		else if (regSpecifier == C_REG_SPECIFIER) {
+			int regInt = binToDec(cReg);
+			if (regInt == 0) {
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					cReg[i] = ASCII_ONE;
+				}
+				if (link == ASCII_ZERO) {
+					link = ASCII_ONE;
+				}
+				else {
+					link = ASCII_ZERO;
+				}
+			}
+			else {
+				regInt--;
+				char *temp = decToBin(regInt);
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					cReg[i] = temp[i];
+				}
+				free(temp);
+			}
+		}
+		else {
+			int regInt = binToDec(dReg);
+			if (regInt == 0) {
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					dReg[i] = ASCII_ONE;
+				}
+				if (link == ASCII_ZERO) {
+					link = ASCII_ONE;
+				}
+				else {
+					link = ASCII_ZERO;
+				}
+			}
+			else {
+				regInt--;
+				char *temp = decToBin(regInt);
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					dReg[i] = temp[i];
+				}
+				free(temp);
+			}
+		}
+	}
+
+	void ic(int regSpecifier) {
+		// increment (register) by one
+		if (regSpecifier == A_REG_SPECIFIER) {
+			int regInt = binToDec(aReg);
+			if (regInt == (MAX_NUM_ELEMENTS - 1)) {
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					aReg[i] = ASCII_ZERO;
+				}
+				if (link == ASCII_ZERO) {
+					link = ASCII_ONE;
+				}
+				else {
+					link = ASCII_ZERO;
+				}
+			}
+			else {
+				regInt++;
+				char *temp = decToBin(regInt);
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					aReg[i] = temp[i];
+				}
+				free(temp);
+			}
+		}
+		else if (regSpecifier == B_REG_SPECIFIER) {
+			int regInt = binToDec(bReg);
+			if (regInt == (MAX_NUM_ELEMENTS - 1)) {
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					bReg[i] = ASCII_ZERO;
+				}
+				if (link == ASCII_ZERO) {
+					link = ASCII_ONE;
+				}
+				else {
+					link = ASCII_ZERO;
+				}
+			}
+			else {
+				regInt++;
+				char *temp = decToBin(regInt);
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					bReg[i] = temp[i];
+				}
+				free(temp);
+			}
+		}
+		else if (regSpecifier == C_REG_SPECIFIER) {
+			int regInt = binToDec(cReg);
+			if (regInt == (MAX_NUM_ELEMENTS - 1)) {
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					cReg[i] = ASCII_ZERO;
+				}
+				if (link == ASCII_ZERO) {
+					link = ASCII_ONE;
+				}
+				else {
+					link = ASCII_ZERO;
+				}
+			}
+			else {
+				regInt++;
+				char *temp = decToBin(regInt);
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					cReg[i] = temp[i];
+				}
+				free(temp);
+			}
+		}
+		else {
+			int regInt = binToDec(dReg);
+			if (regInt == (MAX_NUM_ELEMENTS - 1)) {
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					dReg[i] = ASCII_ZERO;
+				}
+				if (link == ASCII_ZERO) {
+					link = ASCII_ONE;
+				}
+				else {
+					link = ASCII_ZERO;
+				}
+			}
+			else {
+				regInt++;
+				char *temp = decToBin(regInt);
+				int i;
+				for (i = 0; i < REG_LEN; i++) {
+					dReg[i] = temp[i];
+				}
+				free(temp);
+			}
+		}
+	}
+
+		int getRegisterSpecifierLen2(int n) {
+		char *binString = decToBin(n);
+		char tempArr[3];
+		char *tempArrPtr = tempArr;
+		tempArrPtr[0] = binString[4];
+		tempArrPtr[1] = binString[5];
+		tempArrPtr[2] = '\0';
+		free(binString);
+		int temp = binToDec(tempArrPtr);
+		if (temp == A_REG_SPECIFIER) {
+			return A_REG_SPECIFIER;
+		}
+		else if (temp == B_REG_SPECIFIER) {
+			return B_REG_SPECIFIER;
+		}
+		else if (temp == C_REG_SPECIFIER) {
+			return C_REG_SPECIFIER;
+		}
+		else {
+			return D_REG_SPECIFIER;
+		}
+	}
+
+	int getRegisterSpecifierLen3(int n) {
+		char *binString = decToBin(n);
+		char tempArr[4];
+		char *tempArrPtr = tempArr;
+		tempArrPtr[0] = binString[4];
+		tempArrPtr[1] = binString[5];
+		tempArrPtr[2] = binString[6];
+		tempArrPtr[3] = '\0';
+		free(binString);
+		int temp = binToDec(tempArrPtr);
+		if (temp == A_REG_SPECIFIER) {
+			return A_REG_SPECIFIER;
+		}
+		else if (temp == B_REG_SPECIFIER) {
+			return B_REG_SPECIFIER;
+		}
+		else if (temp == C_REG_SPECIFIER) {
+			return C_REG_SPECIFIER;
+		}
+		else if (temp == D_REG_SPECIFIER) {
+			return D_REG_SPECIFIER;
+		}
+		else if (temp == PC_SPECIFIER) {
+			return PC_SPECIFIER;
+		}
+		else if (temp == PSW_SPECIFIER) {
+			return PSW_SPECIFIER;
+		}
+		else if (temp == SP_SPECIFIER) {
+			return SP_SPECIFIER;
+		}
+		else {
+			return SPL_SPECIFIER;
+		}
+	}
+
+	int getSubOpcodeLen2(int n) {
+		char *binString = decToBin(n);
+		char opcodeArr[3];
+		char *opcodePtr = opcodeArr;
+		opcodePtr[0] = binString[4];
+		opcodePtr[1] = binString[5];
+		opcodePtr[2] = '\0';
+		free(binString);
+		int out = binToDec(opcodePtr);
+		return out;
+	}
+
+	int getSubOpcodeLen3(int n) {
+		char *binString = decToBin(n);
+		char opcodeArr[4];
+		char *opcodePtr = opcodeArr;
+		opcodePtr[0] = binString[4];
+		opcodePtr[1] = binString[5];
+		opcodePtr[2] = binString[6];
+		opcodePtr[3] = '\0';
+		free(binString);
+		int out = binToDec(opcodePtr);
+		return out;
+	}
+
+	int getOpcode(int n) {
+		char *binString = decToBin(n);
+		char opcodeArr[5];
+		char *opcodePtr = opcodeArr;
+		opcodePtr[0] = binString[0];
+		opcodePtr[1] = binString[1];
+		opcodePtr[2] = binString[2];
+		opcodePtr[3] = binString[3];
+		opcodePtr[4] = '\0';
+		free(binString);
+		int out = binToDec(opcodePtr);
+		return out;
+	}

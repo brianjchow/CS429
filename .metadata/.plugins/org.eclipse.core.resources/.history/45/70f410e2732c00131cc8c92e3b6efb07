@@ -1,0 +1,356 @@
+/*
+ * LinkedList.c
+ *
+ *  Created on: Oct 3, 2013
+ *      Author: Brian
+ */
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+typedef struct Node Node;
+typedef struct LinkedList LinkedList;
+typedef struct iterator;
+
+struct Node {
+	char *data;
+	Node *next;
+};
+
+struct LinkedList {
+	Node *head, *tail;
+	int size;
+};
+
+struct iterator {
+
+};
+
+//struct LinkedList list;
+
+Node* newNode(char *data) {
+	// note: 0 is false and 1 is true
+
+
+	Node* out = malloc(sizeof(struct Node));
+
+
+	if (data != NULL) {
+		(*out).data = data;
+		(*out).next = NULL;
+	}
+	return out;
+}
+
+LinkedList* newLinkedList() {
+
+	LinkedList* out = malloc(sizeof(struct LinkedList));
+	(*out).head = NULL;
+	(*out).tail = NULL;
+	(*out).size = 0;
+	return out;
+}
+
+int add(LinkedList* list, Node* toAdd) {
+	// note: 0 is false and 1 is true
+
+	if (list == NULL || toAdd == NULL) {
+		return 0;
+	}
+	if ((*list).size == 0) {
+		(*list).head = toAdd;
+		(*list).tail = toAdd;
+		(*list).size++;
+		return 1;
+	}
+	else {
+//		Node* tempTail = (*list).tail;
+//		(*tempTail).data = (*toAdd).data;
+//		(*tempTail).next = toAdd;
+		(list->tail)->next = toAdd;
+		(*list).tail = toAdd;
+		//(list->tail)->data = (*toAdd).data;
+
+		(*list).size++;
+		return 1;
+	}
+
+	return 0;
+}
+
+int getSize(LinkedList* list) {
+	return (*list).size;
+}
+
+int checkValidity(char *string) {
+	// note: 0 is false and 1 is true;
+	int length = strlen(string);
+	int i = 0;
+	int hasFirstColon = 0;		// : ascii = 58
+	int hasFirstEquals = 0;		// = ascii = 61
+
+	if (string == NULL || length <= 0) {
+		return 0;
+	}
+	if (string[0] != 'F' && string[0] != 'Q') {
+		return 0;
+	}
+	while (i <= length) {
+		int temp = string[i];
+		if (temp == 58 && hasFirstColon == 0) {
+			hasFirstColon = 1;
+		}
+		if (temp == 61 && hasFirstColon == 1 && hasFirstEquals == 0) {
+			hasFirstEquals = 1;
+		}
+		if (hasFirstColon == 1 && hasFirstEquals == 1) {
+			return 1;
+		}
+		i++;
+	}
+	return 0;
+}
+
+//char * removeWhitespace(char *string) {			// preserves newline/EOF character at the end
+//	int i, length, newSize;
+//	length = strlen(string);
+//	newSize = 0;
+//
+//	for (i = 0; i <= length; i++) {
+//		if ((int) string[i] != 32) {
+//			newSize++;
+//		}
+//	}												// consider adding test here to see if no whitespace exists? if none just return parameter?
+//	printf("Newsize = %d\n", newSize);
+//	char temp[newSize];
+//	char *out = temp;								// find a way to merge this and the declaration for temp above?
+//	int outCounter = 0;
+//	for (i = 0; i <= length; i++) {
+//		if ((int) string[i] != 32) {
+//			//out[outCounter] = string[i];
+//			temp[outCounter] = string[i];
+//			outCounter++;
+//		}
+//	}
+//	return temp;
+//}
+
+int sizeWOWhitespace(char *string) {
+	int i, length, newSize;
+	length = strlen(string);
+	newSize = 0;
+
+	for (i = 0; i <= length; i++) {
+		if ((int) string[i] != 32) {
+			newSize++;
+		}
+	}
+	return newSize;
+}
+
+void removeWhitespace(char *src, char *dest) {												// THIS MEANS NO SPACES ALLOWED IN ANY FIELD (?)
+	int i, length;
+	length = strlen(src);
+	int destCounter = 0;
+
+	for (i = 0; i <= length; i++) {
+		if ((int) src[i] != 32) {
+			dest[destCounter] = src[i];
+			destCounter++;
+		}
+	}
+}
+
+int parseLine(char *string) {
+	// note: 0 is false and 1 is true
+
+	if (!checkValidity(string)) {
+		return 0;
+	}
+	int indexOfColon, indexOfEquals, bothFound, i;
+	indexOfColon = -1;
+	indexOfEquals = -1;
+	bothFound = 0;
+	i = 0;
+	int length = strlen(string);
+	while (bothFound == 0 && i <= length) {
+		int temp = string[i];
+		if (temp == 58 && indexOfColon == -1) {
+			indexOfColon = i;
+		}
+		if (temp == 61 && indexOfColon != -1 && indexOfEquals == -1) {
+			indexOfEquals = i;
+		}
+		if (indexOfColon != -1 && indexOfEquals != -1) {
+			bothFound = 1;
+		}
+		i++;
+	}
+
+	printf("Index of first colon: %d\n", indexOfColon);
+	printf("Index of first equals: %d\n", indexOfEquals);
+
+	// change to strtok later
+	char name[(indexOfColon - 1)];
+	char property[(indexOfEquals - indexOfColon) - 1];
+	char value[((length - 1) - 1)];
+
+
+
+	return 0;
+}
+
+void testLLNodeFunctionality() {
+	// begin testing Node
+
+	char string[] = {"Hello world"};
+	int size = sizeof(string);
+	printf("Size of string: %d\n", size);
+
+	char *stringPtr = string;
+	printf("Size of stringPtr: %zu\n", strlen(stringPtr));
+
+	Node* test = newNode(stringPtr);
+	if ((*test).data == NULL) {
+		printf("Node data field is null\n");
+	}
+	if ((*test).next == NULL) {
+		printf("Node next field is null\n");
+	}
+	int i;
+	for (i = 0; i < size; i++) {
+		printf("%c", (*test).data[i]);
+	}
+	printf("\n\n");
+
+	// begin testing LinkedList
+
+	printf("TESTING CREATE NEW LL---------------------------------------\n");
+	LinkedList* testll = newLinkedList();
+	if ((*testll).head == NULL) {
+		printf("LL head field is null\n");
+	}
+	if ((*testll).tail == NULL) {
+		printf("LL tail field is null\n");
+	}
+	printf("LL size field is %d\n\n", (*testll).size);
+
+	printf("TESTING ADD TO EMPTY LL ------------------------------------\n");
+	add(testll, test);
+	printf("Current LL size: %d\n", (*testll).size);
+	char *ptrHeadArray = (testll->head)->data;
+	printf("Contents of string in head: ");
+	for (i = 0; i < size; i++) {
+		printf("%c", ptrHeadArray[i]);
+	}
+	printf("\n");
+	char *ptrTailArray = (testll->tail)->data;
+	printf("Contents of string in tail: ");
+	for (i = 0; i < size; i++) {
+		printf("%c", ptrTailArray[i]);
+	}
+	printf("\n\n");
+
+	printf("TESTING ADD TO LL OF SIZE 1 --------------------------------\n");
+	char *string2 = "Goodbye world";
+	Node* test2 = newNode(string2);
+	add(testll, test2);
+	int size2 = strlen(string2) + 1;
+	printf("Current LL size: %d\n", (*testll).size);
+	ptrHeadArray = (testll->head)->data;
+	printf("Contents of string in head: ");
+	for (i = 0; i < (strlen(string) + 1); i++) {
+		printf("%c", ptrHeadArray[i]);
+	}
+	printf("\n");
+	ptrTailArray = (testll->tail)->data;
+	printf("Contents of string in tail: ");
+	for (i = 0; i < size2; i++) {
+		printf("%c", ptrTailArray[i]);
+	}
+	printf("\n\n");
+
+	printf("TESTING ADD OF LL OF SIZE 2 AND POINTER LOGISTICS ----------\n");
+	char *string3 = "End of the world";
+	Node* test3 = newNode(string3);
+	add(testll, test3);
+	printf("Current LL size: %d\n", (*testll).size);
+	Node* curNode = (*testll).head;
+	char *curPtr = (*curNode).data;
+	printf("Contents of string in first link: ");
+	for (i = 0; i < (strlen(stringPtr) + 1); i++) {
+		printf("%c", curPtr[i]);
+	}
+	printf("\n");
+	curNode = (*curNode).next;
+	curPtr = (*curNode).data;
+	printf("Contents of string in second link: ");
+	for (i = 0; i < (strlen(curPtr) + 1); i++) {
+		printf("%c", curPtr[i]);
+	}
+	printf("\n");
+	curNode = (*curNode).next;
+	curPtr = (*curNode).data;
+	printf("Contents of string in third link: ");
+	for (i = 0; i < (strlen(curPtr) + 1); i++) {
+		printf("%c", curPtr[i]);
+	}
+	printf("\n\n");
+}
+
+int main() {
+
+	//testLLNodeFunctionality();
+	char *string = "F CDC6600: number_registers=24";
+	int size = strlen(string);
+	printf("Size: %d\n", size);
+	int i;
+	for (i = 0; i < size; i++) {
+		printf("%c", string[i]);
+	}
+	printf("\n");
+	int valid = checkValidity(string);
+	printf("Valid: %d\n", valid);
+	int newSize = sizeWOWhitespace(string);
+	char shortened[newSize];
+	char *shortenedPtr = shortened;
+	removeWhitespace(string, shortenedPtr);
+	printf("Without whitespace: ");
+	for (i = 0; i < newSize; i++) {
+		printf("%c", shortenedPtr[i]);
+	}
+	printf("\n");
+	parseLine(shortenedPtr);
+
+
+
+	return 0;
+}
+
+	// read line by line
+		// read until \n is encountered, storing chars in array
+		// send array to checkValidity()
+		// if checkValidity() returns 1
+			// send to [METHOD] for processing; use strtok to delimit
+			// once delimited, send to [METHOD] for storage (store length of array in 0th index)
+		// else do nothing
+		// repeat until EOF is encountered
+		// see http://stackoverflow.com/questions/2372813/reading-one-line-at-a-time-in-c
+	// storage (linked list approach)
+		// use strtok to delimit into NAME, PROPERTY, and VALUE fields
+		// use top-level linked list to store NAMEs; data field of each link holds address to middle-level LL
+		// use middle-level linked list to store PROPERTY; data field of each link holds address to low-level LL
+		// use low-level linked list to store VALUE
+		// see https://github.com/laumann/C/tree/master/linkedlist
+		// see https://github.com/cmr/C-Utilities/blob/master/LinkedList.h
+	// storage (mixed linked list/array approach)
+		// same as linked list approach EXCEPT
+		// use array instead of linked list to store VALUE
+		// not much difference; uses one less pointer due to direct access to char array (string) from middle-level LL
+	// storage (hashmap)
+		// see http://elliottback.com/wp/hashmap-implementation-in-c/
+		// see
+		// collisions not possible
+		// too fucking hard at this point

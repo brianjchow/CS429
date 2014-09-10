@@ -1,0 +1,21 @@
+15:57:23 **** Incremental Build of configuration Debug for project Lab 2 ****
+make all 
+Building file: ../5bit.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"5bit.d" -MT"5bit.d" -o "5bit.o" "../5bit.c"
+cygwin warning:
+  MS-DOS style path detected: C:\Users\Fatass\Dropbox\CS 429\Labs\Lab 2\Debug
+  Preferred POSIX equivalent is: /cygdrive/c/Users/Fatass/Dropbox/CS 429/Labs/Lab 2/Debug
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+Finished building: ../5bit.c
+ 
+Building target: Lab 2.exe
+Invoking: Cygwin C Linker
+gcc  -o "Lab 2.exe"  ./5bit.o   
+Finished building target: Lab 2.exe
+ 
+
+15:57:25 Build Finished (took 2s.279ms)
+

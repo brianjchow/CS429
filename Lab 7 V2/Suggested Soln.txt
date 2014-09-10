@@ -1,0 +1,1097 @@
+/*
+  PDP-429 Interpreter:
+
+  A much more complex, 16-bit computer design
+*/
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+FILE *input;
+
+typedef short Boolean;
+#define TRUE 1
+#define FALSE 0
+
+Boolean debug = FALSE;
+Boolean verbose = FALSE;
+
+typedef char *STRING;
+
+#define CAST(t,e) ((t)(e))
+#define TYPED_MALLOC(t) CAST(t*, malloc(sizeof(t)))
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/* print representation of a character for debugging                 */
+/*                                                                   */
+char   *printrep (unsigned short  c)
+{
+    static char pr[8];
+
+    if (c < 32)
+        {
+            /* control characters */
+            pr[0] = '^';
+            pr[1] = c + 64;
+            pr[2] = '\0';
+        }
+    else if (c < 127)
+        {
+            /* printing characters */
+            pr[0] = c;
+            pr[1] = '\0';
+        }
+    else if (c == 127)
+        return("<del>");
+    else if (c <= 0377)
+        {
+            /* upper 128 codes from 128 to 255;  print as \ooo - octal  */
+            pr[0] = '\\';
+            pr[3] = '0' + (c & 7);
+            c = c >> 3;
+            pr[2] = '0' + (c & 7);
+            c = c >> 3;
+            pr[1] = '0' + (c & 3);
+            pr[4] = '\0';
+        }
+    else
+        {
+            /* very large number -- print as 0xffff - 4 digit hex */
+            (void)sprintf(pr, "0x%04x", c);
+        }
+    return(pr);
+}
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+/* PDP-429 types */
+
+/* internal controls */
+long long time = 0;
+
+
+/* 16-bit data types */
+
+typedef unsigned short Address;
+typedef unsigned short INST;
+typedef unsigned short Word;
+
+
+/* 16-bit values */
+#define MASK_W16      0xFFFF
+#define MASK_SIGN_BIT 0x8000
+
+
+/* A 10-bit Memory address specifier: 8 bits of page offset, plus
+   Z/C bit and the D/I bit. */
+#define MASK_I_BIT   0x200
+#define MASK_ZC_BIT  0x100
+#define MASK_OFFSET  0x0FF
+
+/* We check overflow by doing all our arithmetic in 32-bits,
+   and then masking to 16 bits.  If we have any extra bits,
+   we have overflow. */
+#define MASK_OVERFLOW 0xFFFF0000    
+
+#define MASK_SMA 0x200
+#define MASK_SZA 0x100
+#define MASK_SNL 0x080
+#define MASK_RSS 0x040
+#define MASK_CLA 0x020
+#define MASK_CLL 0x010
+#define MASK_CMA 0x008
+#define MASK_CML 0x004
+#define MASK_DCA 0x002
+#define MASK_ICA 0x001
+
+
+#define MASK_IOT_DEVICE   0x3F8
+#define MASK_IOT_FUNCTION 0x007
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+/* The registers */
+Word Register[9];
+STRING register_name[9] = {"A", "B", "C", "D", "PC", "PSW", "SP", "SPL", "L"};
+
+/* The Link bit */
+#define L Register[8]
+
+
+/* the special purpose registers */
+/* registers */
+#define PC  Register[4]
+#define PSW Register[5]
+#define SP  Register[6]
+#define SPL Register[7]
+
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+#define MEMORY_SIZE 65536
+
+INST     memory[MEMORY_SIZE];
+Boolean defined[MEMORY_SIZE];
+
+
+void Clear_Memory(void)
+{
+    int i;
+    for (i = 0; i < MEMORY_SIZE; i++)
+        {
+            defined[i] = FALSE;
+        }
+}
+
+void Store_Memory(Address addr, Word value)
+{
+    if (debug)
+        fprintf(stderr, "write memory: 0x%04X = 0x%04X\n", addr, value);
+
+    defined[addr] = TRUE;
+    memory[addr] = value & MASK_W16;
+    time = time + 1;
+}
+
+Word Fetch_Memory(Address addr)
+{
+    Word value;
+
+    if (defined[addr])
+        value = memory[addr];
+    else
+        value = 0;
+    time = time + 1;
+
+    if (debug)
+        fprintf(stderr, "read memory: 0x%04X = 0x%04X\n", addr, value);
+    return(value);
+}
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+/* constructing the opcode name for an instruction */
+
+char opcode_name[48];
+
+void clear_opcode_name(void)
+{
+    opcode_name[0] = '\0';
+}
+
+void append_opcode_name(STRING name)
+{
+    if (opcode_name[0] != '\0')
+        strncat(opcode_name, " ", sizeof(opcode_name));
+    strncat(opcode_name, name, sizeof(opcode_name));
+}
+
+void append_opcode_name_mod_reg(STRING name, int regspec)
+{
+    char fullname[8];
+    sprintf(fullname, "%s%s", name, register_name[regspec]);
+    append_opcode_name(fullname);
+}
+
+
+char *get_opcode_name(void)
+{
+    return(opcode_name);
+}
+
+/* ***************************************************************** */
+
+/* constructing the opcode name for an instruction */
+
+char mod_register[128];
+
+void clear_mod_register(void)
+{
+    mod_register[0] = '\0';
+}
+
+void append_mod_register(STRING name)
+{
+    if (mod_register[0] != '\0')
+        strncat(mod_register, ", ", sizeof(mod_register));
+    strncat(mod_register, name, sizeof(mod_register));
+}
+
+void  get_mod_register(regspec, value)
+{
+    char access[32];
+    sprintf(access, "%s -> 0x%04X", register_name[regspec], value);
+    append_mod_register(access);
+}
+
+void  set_mod_register(regspec, value)
+{
+    char define[32];
+    sprintf(define, "0x%04X -> %s", value, register_name[regspec]);
+    append_mod_register(define);
+}
+
+
+Word get_memory(Address addr)
+{
+    char access[32];
+    Word value = Fetch_Memory(addr);
+    sprintf(access, "M[0x%04X] -> 0x%04X", addr, value);
+    append_mod_register(access);
+    return(value);
+}
+
+void  set_memory(Address addr, Word value)
+{
+    char define[32];
+    sprintf(define, "0x%04X -> M[0x%04X]", value, addr);
+    append_mod_register(define);
+    Store_Memory(addr, value);
+}
+
+char *get_mod_registers(void)
+{
+    if (mod_register[0] == 0)
+        return(NULL);
+    else
+        return(mod_register);
+}
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+/* low-order bit is 1 if running; 0 if halted */
+#define MASK_RUNNING  0x1
+
+/* The Processor Status Word */
+void Set_Running(Boolean running)
+{
+    get_mod_register(5,PSW);
+    if (running)
+        PSW = PSW | MASK_RUNNING;
+    else
+        PSW = PSW & ~MASK_RUNNING;
+    set_mod_register(5, PSW);
+}
+
+Boolean Get_Running()
+{
+    return((PSW & 0x1) != 0);
+}
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+void Illegal_Opcode(Address old_PC, INST inst)
+{
+    fprintf(stderr, "Illegal opcode at 0x%04X: 0x%04X\n", old_PC, inst);
+    append_opcode_name("illegal");
+    Set_Running(FALSE);
+}
+
+
+void Stack_Overflow(void)
+{
+    fprintf(stderr, "Stack Pointer = 0x%04X; Stack Limit = 0x%04X\n", SP, SPL);
+    append_opcode_name("Stack Overflow");
+    Set_Running(FALSE);
+}
+
+void Stack_Underflow(void)
+{
+    fprintf(stderr, "Stack Pointer = 0x%04X; Stack Limit = 0x%04X\n", SP, SPL);
+    append_opcode_name("Stack Underflow");
+    Set_Running(FALSE);
+}
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+Word Pop_Stack(void)
+{
+    Word value;
+    get_mod_register(6, SP);
+    SP = SP + 1;
+    set_mod_register(6, SP);
+    if (SP > MEMORY_SIZE)
+        {
+            Stack_Underflow();
+            return(0);
+        }
+    value = get_memory(SP);
+    return(value);
+}
+
+void Push_Stack(Word value)
+{
+    if (SP < SPL)
+        {
+            Stack_Overflow();
+            return;
+        }
+    set_memory(SP, value);
+    SP = SP - 1;
+    set_mod_register(6, SP);
+}
+
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+Word Get_Register(int regspec)
+{
+    Word value;
+
+    if ((0 <= regspec) && (regspec <= 7))
+        value = Register[regspec];
+    else
+        {
+            fprintf(stderr, "Illegal register specifier %d\n", regspec);
+            value = 0;
+        }
+    get_mod_register(regspec, value);
+    return(value);
+}
+
+
+void Set_Register(int regspec, Word value)
+{
+    set_mod_register(regspec, value);
+    if ((0 <= regspec) && (regspec <= 7))
+        Register[regspec] = value;
+    else
+        {
+            fprintf(stderr, "Illegal register specifier %d\n", regspec);
+        }
+}
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+int get2(void)
+{
+    int c1 = getc(input);
+    int c2 = getc(input);
+    if (debug) fprintf(stderr, "read two bytes: 0x%X, 0x%X\n", c1, c2);
+    if ((c1 == EOF) || (c2 == EOF))
+        {
+            fprintf(stderr, "Premature EOF\n");
+            exit(1);
+        }
+    int n = (c1 << 8) | c2;
+    return(n);
+}
+
+Address Load_Binary_Object_File(STRING name)
+{
+    int c1 = getc(input);
+    int c2 = getc(input);
+    int c3 = getc(input);
+    int c4 = getc(input);
+    if (debug) fprintf(stderr, "read four bytes: 0x%X, 0x%X, 0x%X, 0x%X\n", c1, c2, c3, c4);
+
+    if ((c1 != 'O') || (c2 != 'B') || (c3 != 'J') || (c4 != 'G'))
+        {
+            fprintf(stdout, "First four bytes are not OBJG: ");
+            fprintf(stdout, "%s", printrep(c1));
+            fprintf(stdout, "%s", printrep(c2));
+            fprintf(stdout, "%s", printrep(c3));
+            fprintf(stdout, "%s", printrep(c4));
+            fprintf(stdout, " (%02X %02X %02X %02X)\n", c1, c2, c3, c4);
+
+            exit(1);
+        }
+
+    Address entry_point = get2();
+
+    int n;
+    while ((n = getc(input)) != EOF)
+        {
+            if (debug) fprintf(stderr, "Read next block of %d bytes\n", n);
+            n = n - 1;
+            Address addr = get2(); n -= 2;
+            while (n > 0)
+                {
+                    Word data = get2(); n -= 2;            
+                    Store_Memory(addr, data);
+                    addr += 1;
+                }
+        }
+
+    return(entry_point);
+}
+
+void Load_Object_File(STRING name)
+{
+    Address entry_point = 0;
+
+    Clear_Memory();
+
+    entry_point = Load_Binary_Object_File(name);
+
+    time = 0;
+    Set_Running(TRUE);
+    PC = entry_point & MASK_W16;
+}
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+int Decode_Register_Field(inst)
+{
+    /* The normal register specification is in the
+       two bit below the 4-bit opcode */
+    int n = (inst >> 10) & 0x3;
+    return(n);
+}
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+int Word2Int(Word value)
+{
+    /* A Word is an unsigned short; to do arithmetic,
+       we want a signed int equivalent of it. */
+    /* so first cast to a signed quantity, then
+       to a (signed) int. */
+    int n = CAST(int, CAST(signed short, value));
+    return(n);
+}
+
+int Check_Add_Overflow(int a, int b, int value)
+{
+    Boolean OV = FALSE;
+
+    /* check for severe overflow and set L if so */
+    if ((value < -32768) || (+32767 < value)) OV = TRUE;
+
+    if (OV)
+        {
+            L = 1;
+            set_mod_register(8, L);
+        }
+
+    return(value & MASK_W16);
+}
+
+void Divide_by_Zero(void)
+{
+    L = 1;
+    set_mod_register(8, L);
+}
+
+Address Memory_Reference_Address(Address old_PC, INST inst)
+{
+    /* get the addr */
+    Address addr = inst & MASK_OFFSET;
+    /* check for Z/C = 1 -> current page */
+    if ((inst & MASK_ZC_BIT) != 0)
+        addr = addr | (old_PC & ~MASK_OFFSET);
+    /* check for I/D = 1 -> indirect */
+    if ((inst & MASK_I_BIT) != 0)
+        {
+            append_opcode_name("I");
+            addr = get_memory(addr);
+        }
+    return(addr);
+}
+
+
+void Misc_Instructions(Address old_PC, INST inst)
+{
+    /* low order 10 bits are sub-opcode */
+    int subopcode = inst & 0x3FF;
+    switch (subopcode)
+        {
+        case 0: /* NOP */
+            append_opcode_name("NOP");            
+            break;
+
+        case 1: /* HLT */
+            append_opcode_name("HLT");            
+            Set_Running(FALSE);
+            break;
+
+        case 2:
+            append_opcode_name("RET");            
+            PC = Pop_Stack();
+            set_mod_register(4, PC);
+            break;
+            
+        default:
+            Illegal_Opcode(old_PC, inst);
+        }
+}
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+void Memory_Reference_Instruction(Address old_PC, INST inst)
+{
+    int opcode = (inst >> 12) & 0xF;
+    int regspec = Decode_Register_Field(inst);
+    Address addr = Memory_Reference_Address(old_PC, inst);
+
+    int i;
+    int j;
+    int k;
+
+    switch (opcode)
+        {
+        case 1: /* ADD */
+            append_opcode_name_mod_reg("ADD",regspec);
+            j = Word2Int(Get_Register(regspec));
+            k = Word2Int(get_memory(addr));
+            i = j + k;
+            i = Check_Add_Overflow(j,k,i);
+            Set_Register(regspec, i);
+            break;
+
+        case 2: /* SUB */
+            append_opcode_name_mod_reg("SUB",regspec);
+            j = Word2Int(Get_Register(regspec));
+            k = Word2Int(get_memory(addr));
+            i = j - k;
+            i = Check_Add_Overflow(j,-k,i);
+            Set_Register(regspec, i);
+            break;
+
+        case 3: /* MUL */
+            append_opcode_name_mod_reg("MUL",regspec);
+            j = Word2Int(Get_Register(regspec));
+            k = Word2Int(get_memory(addr));
+            i = j * k;
+            i = Check_Add_Overflow(j,k,i);
+            Set_Register(regspec, i);
+            break;
+
+        case 4: /* DIV */
+            append_opcode_name_mod_reg("DIV",regspec);
+            j = Word2Int(Get_Register(regspec));
+            k = Word2Int(get_memory(addr));
+            if (k != 0)
+                i = j / k;
+            else
+                {
+                    Divide_by_Zero();
+                    i = 0;
+                }
+            Set_Register(regspec, i);
+            break;
+
+        case 5: /* AND */ 
+            append_opcode_name_mod_reg("AND",regspec);
+            j = Get_Register(regspec);
+            k = get_memory(addr);
+            i = j & k;
+            Set_Register(regspec, i);
+            break;
+
+        case 6: /* OR */
+            append_opcode_name_mod_reg("OR",regspec);
+            j = Get_Register(regspec);
+            k = get_memory(addr);
+            i = j | k;
+            Set_Register(regspec, i);
+            break;
+
+        case 7: /* XOR */
+            append_opcode_name_mod_reg("XOR",regspec);
+            j = Get_Register(regspec);
+            k = get_memory(addr);
+            i = j ^ k;
+            Set_Register(regspec, i);
+            break;
+
+        case 8: /* Load */
+            append_opcode_name_mod_reg("LD",regspec);
+            i = get_memory(addr);
+            Set_Register(regspec, i);
+            break;
+            
+        case 9: /* Store */
+            append_opcode_name_mod_reg("ST",regspec);
+            i = Get_Register(regspec);
+            set_memory(addr, i);
+            break;
+        }
+
+}
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+void Non_Register_Memory_Reference_Instruction(Address old_PC, INST inst)
+{
+    /* A 6-bit opcode, using what would other wise be a register spec */
+    int opcode = (inst >> 10) & 0x3F;
+    Address addr = Memory_Reference_Address(old_PC, inst);
+    Word value;
+
+    switch (opcode)
+        {
+        case 0x2C: /* ISZ */
+            append_opcode_name("ISZ");                        
+            value = get_memory(addr);
+            value = (value + 1) & MASK_W16;
+            set_memory(addr, value);
+            if (value == 0) 
+                {
+                    PC = (PC + 1) & MASK_W16;
+                    set_mod_register(4, PC);
+                }
+            break;
+
+        case 0x2D: /* JMP */
+            append_opcode_name("JMP");
+            PC = addr;
+            set_mod_register(4, PC);
+            break;
+
+        case 0x2E: /* CALL */
+            append_opcode_name("CALL");
+            Push_Stack(PC);
+            PC = addr;
+            set_mod_register(4, PC);
+            break;
+            
+        case 0x30: /* PUSH */
+            append_opcode_name("PUSH");                        
+            value = get_memory(addr);
+            Push_Stack(value);
+            break;
+
+        case 0x31: /* POP */
+            append_opcode_name("POP");                        
+            value = Pop_Stack();
+            set_memory(addr, value);
+            break;
+
+        default:  
+            Illegal_Opcode(old_PC, inst);
+
+        }
+}
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+void Register_to_Register_Instruction(Address old_PC, INST inst)
+{
+    /* 3 bits are sub-opcode */
+    int subopcode = (inst >> 9) & 0x7;
+    int regspec_i = (inst >> 6) & 0x7;
+    int regspec_j = (inst >> 3) & 0x7;
+    int regspec_k = (inst >> 0) & 0x7;
+
+    int i;
+    int j;
+    int k;
+
+    switch (subopcode)    
+        {
+        case 0: /* MOD */
+            append_opcode_name("MOD");
+            j = Word2Int(Get_Register(regspec_j));
+            k = Word2Int(Get_Register(regspec_k));
+            if (k != 0)
+                i = j % k;
+            else
+                {
+                    Divide_by_Zero();
+                    i = 0;
+                }
+            Set_Register(regspec_i, i);
+            break;
+
+        case 1: /* ADD */
+            append_opcode_name("ADD");
+            j = Word2Int(Get_Register(regspec_j));
+            k = Word2Int(Get_Register(regspec_k));
+            i = j + k;
+            i = Check_Add_Overflow(j,k,i);
+            Set_Register(regspec_i, i);
+            break;
+
+        case 2: /* SUB */
+            append_opcode_name("SUB");
+            j = Word2Int(Get_Register(regspec_j));
+            k = Word2Int(Get_Register(regspec_k));
+            i = j - k;
+            i = Check_Add_Overflow(j,-k,i);
+            Set_Register(regspec_i, i);
+            break;
+
+        case 3: /* MUL */
+            append_opcode_name("MUL");
+            j = Word2Int(Get_Register(regspec_j));
+            k = Word2Int(Get_Register(regspec_k));
+            i = j * k;
+            i = Check_Add_Overflow(j,k,i);
+            Set_Register(regspec_i, i);
+            break;
+
+        case 4: /* DIV */
+            append_opcode_name("DIV");
+            j = Word2Int(Get_Register(regspec_j));
+            k = Word2Int(Get_Register(regspec_k));
+            if (k != 0)
+                i = j / k;
+            else
+                {
+                    Divide_by_Zero();
+                    i = 0;
+                }
+            Set_Register(regspec_i, i);
+            break;
+
+        case 5: /* AND */ 
+            append_opcode_name("AND");
+            j = Get_Register(regspec_j);
+            k = Get_Register(regspec_k);
+            i = j & k;
+            Set_Register(regspec_i, i);
+            break;
+
+        case 6: /* OR */
+            append_opcode_name("OR");
+            j = Get_Register(regspec_j);
+            k = Get_Register(regspec_k);
+            i = j | k;
+            Set_Register(regspec_i, i);
+            break;
+
+        case 7: /* XOR */
+            append_opcode_name("XOR");
+            j = Get_Register(regspec_j);
+            k = Get_Register(regspec_k);
+            i = j ^ k;
+            Set_Register(regspec_i, i);
+            break;
+
+        }
+}
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+void Operate_Instruction(Address old_PC, INST inst)
+{
+    Boolean skip = FALSE;
+    
+    int regspec = Decode_Register_Field(inst);
+
+    /* SMA */
+    if (inst & MASK_SMA)
+        {
+            append_opcode_name_mod_reg("SM",regspec);
+            skip = skip || ((Get_Register(regspec) & MASK_SIGN_BIT) != 0);
+        }
+
+    /* SZA */
+    if (inst & MASK_SZA)
+        {
+            append_opcode_name_mod_reg("SZ",regspec);
+            skip = skip || (Get_Register(regspec) == 0);
+        }
+
+    /* SNL */
+    if (inst & MASK_SNL)
+        {
+            append_opcode_name("SNL");
+            get_mod_register(8,L);
+            skip = skip || (L != 0);
+        }
+
+    /* RSS */
+    if (inst & MASK_RSS)
+        {
+            append_opcode_name("RSS");
+            skip = !skip;
+        }
+
+    if (skip)
+        {
+            PC = (PC + 1) & MASK_W16;
+            set_mod_register(4, PC);
+        }
+    
+    /* CLA */
+    if (inst & MASK_CLA)
+        {
+            append_opcode_name_mod_reg("CL",regspec);
+            Set_Register(regspec, 0);
+        }
+
+    /* CLL */
+    if (inst & MASK_CLL)
+        {
+            append_opcode_name("CLL");
+            L = 0;
+            set_mod_register(8,L);
+        }
+
+    /* CMA */
+    if (inst & MASK_CMA)
+        {
+            append_opcode_name_mod_reg("CM",regspec);
+            int n = (~Get_Register(regspec)) & MASK_W16;
+            Set_Register(regspec, n);
+        }
+
+    /* CML */
+    if (inst & MASK_CML)
+        {
+            append_opcode_name("CML");
+            get_mod_register(8,L);
+            L = 1 - L;
+            set_mod_register(8,L);
+        }
+
+    /* DCA */
+    if (inst & MASK_DCA)
+        {
+            append_opcode_name_mod_reg("DC",regspec);
+            int n = Word2Int(Get_Register(regspec));
+            int m = n - 1;
+            m = Check_Add_Overflow(n, -1, m);
+            Set_Register(regspec, m);
+        }
+
+    /* ICA */
+    if (inst & MASK_ICA)
+        {
+            append_opcode_name_mod_reg("IN",regspec);
+            int n = Word2Int(Get_Register(regspec));
+            int m = n + 1;
+            m = Check_Add_Overflow(n, 1, m);
+            Set_Register(regspec, m);
+        }
+}
+
+void IOT_Instruction(Address old_PC, INST inst)
+{
+    int device = (inst & MASK_IOT_DEVICE) >> 3;
+    int function = (inst & MASK_IOT_FUNCTION);
+
+    /* check for device = 3 -- Input */
+    if (device == 3)
+        {
+            append_opcode_name("IOT 3");
+            int regspec = Decode_Register_Field(inst);
+            int c = getc(stdin) & MASK_W16;
+            Set_Register(regspec, c);
+        }
+    /* or device = 4 -- Output */
+    else if (device == 4)
+        {
+            append_opcode_name("IOT 4");
+            int regspec = Decode_Register_Field(inst);
+            int n = Get_Register(regspec);
+            int c = n & 0xFF;
+            putc(c, stdout); 
+        }
+    else
+        {
+            append_opcode_name("IOT <bad-device>");
+            fprintf(stderr, "IOT function %d to unknown device %d; halting\n", function, device);
+            Set_Running(FALSE);
+        }
+}
+    
+    
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+void Execute(Address old_PC, INST inst)
+{
+    /* zero the opcode name */
+    clear_opcode_name();
+    clear_mod_register();
+
+    /* top 4 bits identify what type of instruction we have */
+    int opcode_class = (inst >> 12) & 0xF;
+
+    /* handle each opcode class */
+    switch(opcode_class)
+        {
+        case 0: Misc_Instructions(old_PC, inst);
+            break;
+
+        case 1:
+        case 2: 
+        case 3: 
+        case 4: 
+        case 5: 
+        case 6: 
+        case 7: 
+        case 8: 
+        case 9: Memory_Reference_Instruction(old_PC, inst);
+            break;
+
+        case 10:  IOT_Instruction(old_PC, inst);
+            break;
+
+        case 11:  
+        case 12:  Non_Register_Memory_Reference_Instruction(old_PC, inst);
+            break;
+
+        case 13:  Illegal_Opcode(old_PC, inst);
+            break;
+
+        case 14:  Register_to_Register_Instruction(old_PC, inst);
+            break;
+
+        case 15:
+            Operate_Instruction(old_PC, inst);
+            break;
+        }
+
+    if (verbose)
+        {
+            fprintf(stderr, "Time %3lld: PC=0x%04X instruction = 0x%04X (%s)",
+                    time, old_PC, inst, get_opcode_name());
+            char *regs = get_mod_registers();
+            if (regs != NULL)
+                fprintf(stderr, ": %s", regs);
+            fprintf(stderr, "\n");
+        }
+}
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+void Interpreter(STRING name)
+{
+    Load_Object_File(name);
+
+    while (Get_Running())
+        {
+            Address old_PC = PC;
+            INST inst = Fetch_Memory(PC);
+            PC = (PC + 1) & MASK_W16;
+            Execute(old_PC, inst);
+        }
+}
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+void scanargs(STRING s)
+{
+    /* check each character of the option list for
+       its meaning. */
+
+    while (*++s != '\0')
+        switch (*s)
+            {
+
+            case 'D': /* debug option */
+                debug = TRUE;
+
+            case 'v': /* verbose option */
+                verbose = !verbose;
+                break;
+
+            default:
+                fprintf (stderr,"pdp429: Bad option %c\n", *s);
+                fprintf (stderr,"usage: pdp429 [-D] [-v] object-file\n");
+                exit(1);
+            }
+}
+
+
+
+/* ***************************************************************** */
+/*                                                                   */
+/*                                                                   */
+/* ***************************************************************** */
+
+int main(int argc, STRING *argv)
+{
+    /* main driver program.  
+       Process all arguments. 
+       Define the input file as a name on the command line.  
+    */
+
+    while (argc > 1)
+        {
+            argc--, argv++;
+            if (**argv == '-')
+                scanargs(*argv);
+            else
+                {
+                    input = fopen(*argv,"r");
+                    if (input == NULL)
+                        {
+                            fprintf (stderr, "Can't open %s\n",*argv);
+                        }
+                    else
+                        {
+                            Interpreter(*argv);
+                            fclose(input);
+                        }
+                }
+        }
+
+    exit(0);
+}

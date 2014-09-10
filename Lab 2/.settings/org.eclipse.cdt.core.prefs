@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+environment/project/cdt.managedbuild.config.gnu.cygwin.exe.debug.1020618756/PATH/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.cygwin.exe.debug.1020618756/PATH/operation=replace
+environment/project/cdt.managedbuild.config.gnu.cygwin.exe.debug.1020618756/PATH/value=${CYGWIN_HOME}\\bin;C\:/Program Files/Java/jre7/bin/server;C\:/Program Files/Java/jre7/bin;C\:/Program Files/Java/jre7/lib/amd64;C\:\\Program Files (x86)\\PHP\\;C\:\\Program Files\\Java\\jre7\\bin;C\:\\Program Files\\Java\\jdk1.7.0_10\\bin;C\:\\Program Files (x86)\\ATI Technologies\\ATI.ACE\\Core-Static;C\:\\Program Files\\Common Files\\Microsoft Shared\\Windows Live;C\:\\Users\\Brian\\Desktop\\Eclipse for C\\eclipse-cpp-kepler-R-win32-x86_64\\eclipse
+environment/project/cdt.managedbuild.config.gnu.cygwin.exe.debug.1020618756/append=true
+environment/project/cdt.managedbuild.config.gnu.cygwin.exe.debug.1020618756/appendContributed=true
+environment/project/cdt.managedbuild.config.gnu.cygwin.exe.release.1041310023/PATH/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.cygwin.exe.release.1041310023/PATH/operation=replace
+environment/project/cdt.managedbuild.config.gnu.cygwin.exe.release.1041310023/PATH/value=${CYGWIN_HOME}\\bin;C\:/Program Files/Java/jre7/bin/server;C\:/Program Files/Java/jre7/bin;C\:/Program Files/Java/jre7/lib/amd64;C\:\\Program Files (x86)\\PHP\\;C\:\\Program Files\\Java\\jre7\\bin;C\:\\Program Files\\Java\\jdk1.7.0_10\\bin;C\:\\Program Files (x86)\\ATI Technologies\\ATI.ACE\\Core-Static;C\:\\Program Files\\Common Files\\Microsoft Shared\\Windows Live;C\:\\Users\\Brian\\Desktop\\Eclipse for C\\eclipse-cpp-kepler-R-win32-x86_64\\eclipse
+environment/project/cdt.managedbuild.config.gnu.cygwin.exe.release.1041310023/append=true
+environment/project/cdt.managedbuild.config.gnu.cygwin.exe.release.1041310023/appendContributed=true

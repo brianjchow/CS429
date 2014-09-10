@@ -1,0 +1,834 @@
+/*
+ ============================================================================
+ Name        : facts.c
+ Author      : Brian Chow (bc23784)
+ Date		 : 10/11/13
+ Description : See tester.c for general procedure and Lab3.html in src folder
+ ============================================================================
+ */
+
+/*
+
+ 	 General procedure for reading input file:
+ 	 	 - use int getc(FILE *stream) to read until \n is encountered; use a counter to count the number of characters read
+ 	 	 - once \n is encountered, use char *fgets(char *s, int n, FILE *stream) to read and copy that line to an array
+ 	 	 - process that string
+ 	 	 - reset counter to 0
+ 	 	 - repeat procedure until getc() reads in EOF
+ 	 	 - fgets(): "reads at most the next n - 1 characters into the array s, stopping if a newline is encountered; the newline is included in the array" (K&R 247)
+
+ 	 Main procedure
+
+ 	 	 - SOME PROCEDURE FOR CHECKING COMMAND LINE INPUT SYNTAX
+
+ 	 	 - begin reading facts file using general procedure above
+ 	 	 - check if string returned by reading is valid
+ 	 	 	 - check that it has an 'F' (case-insensitive), a colon, and an equals sign, in that order
+ 	 	 	 - if invalid
+ 	 	 	 	 - print out string skipped statement to standard output
+ 	 	 	 	 - discard string; return to reading facts file
+ 	 	 	 - else
+ 	 	 	 	 - strip string of excess whitespace
+ 	 	 	 	 	 - strip any whitespace before and after 'F'
+ 	 	 	 	 	 - strip any whitespace before and after the first colon
+ 	 	 	 	 	 - strip any whitespace before and after the first equals sign after the colon
+ 	 	 	 - send string to procedure for storing
+
+		 - if questions file was provided
+		 	 - begin reading questions file using general procedure above
+		 	 - check if string returned by reading is valid
+		 	 	 - check that it has a 'Q' (case-insensitive) and a colon, in that order
+		 	 	 - if invalid
+		 	 	 	 - print out string skipped statement to standard output
+		 	 	 	 - discard string; return to reading questions file
+		 	 	 - else
+		 	 	 	 - strip string of excess whitespace
+		 	 	 	 	 - strip any whitespace before and after 'Q'
+		 	 	 	 	 - strip any whitespace before and after the first colon
+		 	 	 	 - send string to procedure for retrieving
+		 - else (no questions file was provided)
+		 	 - begin reading from standard input
+		 	 - check if string returned by reading is valid
+		 	 	 - check that it has a 'Q' (case-insensitive) and a colon, in that order
+		 	 	 - if invalid
+		 	 	 	 - print out string skipped statement to standard output
+		 	 	 	 - discard string; return to reading questions file
+		 	 	 - else
+		 	 	 	 - strip string of excess whitespace
+		 	 	 	 	 - strip any whitespace before and after 'Q'
+		 	 	 	 	 - strip any whitespace before and after the first colon
+		 	 	 	 - send string to procedure for retrieving
+
+ 	 General procedure for storing
+ 	 	 - separate string into the three fields, skipping the first letter in the string ('F'); store each field in a char array
+ 	 	 - send the three char arrays and a LinkedList to add()
+ 	 	 - return 1 if stored successfully, exit(-1) otherwise (?????????????????????????????)
+
+ 	 General procedure for retrieving
+ 	 	 - separate string into the two fields, skipping the first letter in the string ('Q'); store each field in a char array
+ 	 	 - send the two char arrays and the LinkedList with facts to get()
+
+ */
+
+/*
+ 	 Possible bugfixes
+ 	 	 - in store and retrieveFact: strncpy doesn't add in the \0 character to terminate the string; modify?
+ 	 	 	 the name/prop/value arrays have one more space, but I didn't fill them in with \0; need to check their contents first
+ */
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+typedef short boolean;
+#define TRUE 1
+#define FALSE 0
+
+boolean debug = FALSE;
+boolean debugRetrieveAndStore = FALSE;
+
+double reallocWhenLoadFactorEquals = 0.7;
+size_t buflen = 10500;
+
+// *****************************************************************************************************************************************************************************
+
+// ------------------------------------------------
+// begin procedures for handling command line input
+
+	typedef char *STRING;
+
+	#define CAST(t,e) ((t)(e))
+	#define TYPED_MALLOC(t) CAST(t*, malloc(sizeof(t)))
+	#define LINE_WIDTH 72
+
+	/* MALLOC space for a string and copy it */
+
+	STRING remember_string(const STRING name) {
+		size_t n;
+		STRING p;
+
+		if (name == NULL) return(NULL);
+
+		/* get memory to remember file name */
+		n = strlen(name) + 1;
+		p = CAST(STRING, malloc(n));
+		strcpy(p, name);
+		return(p);
+	}
+
+//	void scanArgs(STRING s) {
+//		/* check each character of the option list for
+//		   its meaning. */
+//
+//		while (*++s != '\0') {
+//			switch (*s) {
+//
+//				// no cases available for this program at this time
+//
+//				case 'd': /* debug option */
+//					debug = TRUE;
+//					break;
+//
+//				case 'D': // debug option 2
+//					debug = TRUE;
+//					break;
+//
+//				default:
+//					fprintf (stderr,"PROGR: Bad option %c\n", *s);
+//					exit(-1);
+//			}
+//		}
+//	}
+
+// end procedures for handling command line input
+// ----------------------------------------------
+
+// *****************************************************************************************************************************************************************************
+
+// -------------------------------------------------
+// begin miscellaneous procedures for main procedure
+
+	void die(char *reason) {
+		fprintf(stderr, "*** %s ***\n\n", reason);
+		exit(-1);
+	}
+
+// end miscellaneous procedures for main procedure
+// -----------------------------------------------
+
+// *****************************************************************************************************************************************************************************
+
+// --------------------------
+// begin embedded linked list
+
+	typedef struct Node Node;
+	typedef struct LinkedList LinkedList;
+
+	struct Node {
+		char *name;
+		char *property;
+		char *value;
+		struct Node *next;
+	};
+
+	struct LinkedList {
+		struct Node *head;
+		struct Node *tail;
+		int size;
+	};
+
+	// make a new Node
+	struct Node *newNode(void) {
+		return (struct Node *) malloc(sizeof(struct Node));
+	}
+
+	// make a new LinkedList
+	struct LinkedList *newLinkedList(void) {
+		LinkedList* out = (struct LinkedList *)malloc(sizeof(struct LinkedList));
+		if (out == NULL) {
+			die("Memory allocation failed - out of memory!");
+		}
+		(*out).head = NULL;
+		(*out).tail = NULL;
+		(*out).size = 0;
+		return out;
+	}
+
+	void initialise(LinkedList* list) {
+		if (list == NULL) {
+			return;
+		}
+		(*list).head = NULL;
+		(*list).tail = NULL;
+		(*list).size = 0;
+	}
+
+	void freeLinkedList(LinkedList* list) {
+		Node* temp = (*list).head;
+		Node* currNode = (*list).head;
+		while (currNode != NULL) {
+			temp = currNode;
+			currNode = (*currNode).next;
+			free((*temp).name);
+			free((*temp).property);
+			free((*temp).value);
+			free(temp);
+		}
+		free(list);
+	}
+
+	void toString(LinkedList* list) {
+		Node* temp = (*list).head;
+		int counter = 0;
+		while (temp != NULL) {
+			fprintf(stdout, "[%s, %s, %s]", (*temp).name, (*temp).property, (*temp).value);
+			counter++;
+			if (temp != (*list).tail) {
+				fprintf(stdout, "---");
+				if (counter % 5 == 0) {
+					fprintf(stdout, "\n");
+				}
+			}
+			temp = (*temp).next;
+		}
+	}
+
+	// no error checking implemented here
+	int add(char *name, char *property, char *value, struct LinkedList *list) {
+
+		if (name == NULL || property == NULL || value == NULL || list == NULL) {
+			return FALSE;
+		}
+
+		struct Node *toAdd = newNode();
+		if (toAdd == NULL) {
+			// out of memory
+			free(name);
+			free(property);
+			free(value);
+			freeLinkedList(list);
+			die("Memory allocation failed - out of memory!");
+		}
+		else {
+			// initialize variables
+			(*toAdd).name = name;
+			(*toAdd).property = property;
+			(*toAdd).value = value;
+			(*toAdd).next = NULL;
+		}
+
+		// append to end of list
+		if ((*list).size == 0) {
+			// list is empty
+			(*list).head = toAdd;
+			(*list).tail = toAdd;
+			(*list).size++;
+		}
+		else {
+			(list->tail)->next = toAdd;
+			(*list).tail = toAdd;
+			(*list).size++;
+		}
+		return TRUE;
+	}
+
+	int get(char *name, char *property, struct LinkedList* list) {
+
+		if (name == NULL || property == NULL || list == NULL) {
+			return FALSE;
+		}
+
+		int elementFound = 0;
+		struct Node* temp = (*list).head;
+		while (temp != NULL && elementFound == 0) {
+			if ((strcmp((*temp).name, name) == 0) && (strcmp((*temp).property, property) == 0)) {
+				fprintf(stdout, "F %s: %s = %s\n", name, property, (*temp).value);
+				elementFound++;
+			}
+			temp = (*temp).next;
+		}
+		if (elementFound == 0) {
+			//fprintf(stdout, "Error: no entry with name '%s' and property '%s' was found.\n", name, property);
+			fprintf(stdout, "F %s: %s = unknown\n", name, property);
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+// end embedded linked list
+// ------------------------
+
+// *****************************************************************************************************************************************************************************
+
+// ---------------------------------
+// begin procedure for storing facts
+
+	int storeFact(char *string, LinkedList* list) {
+
+		int length = strlen(string);
+		if (string == NULL || length <= 0) {
+			//fprintf(stdout, "No string specified. Moving on to next line...\n");
+			return FALSE;
+		}
+
+		int i = 0;
+		int indexOfFirstColon = -1;
+		int indexOfFirstEquals = -1;
+		int indexOfFirstChar = -1;
+		int indexOfStartName = -1;
+		int indexOfEndName = -1;
+		int indexOfStartProp = -1;
+		int indexOfEndProp = -1;
+		int indexOfStartVal = -1;
+		int indexOfEndVal = -1;
+
+		while (i < length && isspace((int) string[i])) {
+			i++;
+		}
+		indexOfFirstChar = i;
+		if (string[i] != 'F' && string[i] != 'f') {
+			fprintf(stdout, "'%s' is not a valid string. Moving on to next line...\n", string);
+			return FALSE;
+		}
+		i++;
+
+		// get index of first colon
+		char *ptrToFirstColon = strchr(string, ':');
+		if (ptrToFirstColon == NULL) {
+			fprintf(stdout, "'%s' is not a valid string. Moving on to next line...\n", string);
+			return FALSE;
+		}
+		indexOfFirstColon = ptrToFirstColon - string;
+
+		// find index of first equals sign after first colon
+		i = indexOfFirstColon + 1;
+		while (i < length && indexOfFirstEquals == -1) {
+			int temp = (int) string[i];
+			if (temp == 61) {
+				indexOfFirstEquals = i;
+			}
+			i++;
+		}
+		if (indexOfFirstEquals == -1) {
+			fprintf(stdout, "'%s' is not a valid string. Moving on to next line...\n", string);
+			return FALSE;
+		}
+
+		// find start and stop indices of the name
+		i = indexOfFirstChar + 1;
+		while (i < indexOfFirstColon && isspace((int) string[i])) {
+			i++;
+		}
+		indexOfStartName = i;
+		i = indexOfFirstColon - 1;
+		while (i > indexOfStartName && isspace((int) string[i])) {
+			i--;
+		}
+		indexOfEndName = i;
+
+		// find start and stop indices of the property
+		i = indexOfFirstColon + 1;
+		while (i < indexOfFirstEquals && isspace((int) string[i])) {
+			i++;
+		}
+		indexOfStartProp = i;
+		i = indexOfFirstEquals - 1;
+		while (i > indexOfStartProp && isspace((int) string[i])) {
+			i--;
+		}
+		indexOfEndProp = i;
+
+		// find start and stop indices of the value
+		i = indexOfFirstEquals + 1;
+		while (i < length && isspace((int) string[i])) {
+			i++;
+		}
+		indexOfStartVal = i;
+		i = length - 1;
+		while (i > indexOfStartVal && isspace((int) string[i])) {
+			i--;
+		}
+		indexOfEndVal = i;
+
+		// error check all indices?
+
+		// edge case where string has just the three required delimiters and nothing else
+		i = 0;
+		int charCount = 0;
+		while (i < length) {
+			if (string[i] != 'F' && string[i] != 'f' && (int) string[i] != 58 && (int) string[i] != 61 && !isspace((int) string[i])) {
+				charCount++;
+			}
+			i++;
+		}
+		if (charCount == 0) {
+			fprintf(stdout, "'%s' has nothing to store. Moving on to next line...\n", string);
+			return FALSE;
+		}
+
+		char *name = calloc(indexOfFirstColon - indexOfFirstChar, sizeof(char));
+		char *property = calloc(indexOfFirstEquals - indexOfFirstColon, sizeof(char));
+		char *value = calloc(length - indexOfFirstEquals, sizeof(char));
+		if (name == NULL || property == NULL || value == NULL) {
+			// out of memory
+			free(name);
+			free(property);
+			free(value);
+			freeLinkedList(list);
+			die("Memory allocation failed - out of memory!");
+		}
+
+		strncpy(name, string + indexOfStartName, indexOfEndName - indexOfStartName + 1);
+		strncpy(property, string + indexOfStartProp, indexOfEndProp - indexOfStartProp + 1);
+		strncpy(value, string + indexOfStartVal, indexOfEndVal - indexOfStartVal + 1);
+
+		if (debugRetrieveAndStore) {
+			fprintf(stdout, "In function 'store':\n\tInput string: %s\n\tLength of string: %d\n\tIndex of first char: %d\n\t"
+					"Start and stop of name indices: %d, %d\n\tStart and stop of property indices: %d, %d\n\tStart and "
+					"stop of value indices: %d, %d\n\tParsed name: \'%s\'\n\tParsed property: \'%s\'\n\tParsed value: "
+					"\'%s\'\n\n", string, length, indexOfFirstChar, indexOfStartName, indexOfEndName, indexOfStartProp,
+					indexOfEndProp, indexOfStartVal, indexOfEndVal, name, property, value);
+		}
+
+		return add(name, property, value, list);
+	}
+
+// end procedure for storing facts
+// -------------------------------
+
+// *****************************************************************************************************************************************************************************
+
+// ------------------------------------
+// begin procedure for retrieving facts
+
+	int retrieveFact(char *string, struct LinkedList* list) {
+
+		int length = strlen(string);
+		if (string == NULL || length <= 0) {
+			//fprintf(stdout, "No string specified. Moving on to next line...\n");
+			return FALSE;
+		}
+
+		int i = 0;
+		int indexOfFirstColon = -1;
+		int indexOfFirstChar = -1;
+		int indexOfStartName = -1;
+		int indexOfEndName = -1;
+		int indexOfStartProp = -1;
+		int indexOfEndProp = -1;
+
+		while (i < length && isspace((int) string[i])) {
+			i++;
+		}
+		indexOfFirstChar = i;
+		if (string[i] != 'Q' && string[i] != 'q') {
+			fprintf(stdout, "'%s' is not a valid string. Moving on to next line...\n", string);
+			return FALSE;
+		}
+
+		// get index of first colon
+		char *ptrToFirstColon = strchr(string, ':');
+		if (ptrToFirstColon == NULL) {
+			fprintf(stdout, "'%s' is not a valid string. Moving on to next line...\n", string);
+			return FALSE;
+		}
+		indexOfFirstColon = ptrToFirstColon - string;
+
+		// get start and stop indices of the name
+		i = indexOfFirstChar + 1;
+		while (i < indexOfFirstColon && isspace((int) string[i])) {
+			i++;
+		}
+		indexOfStartName = i;
+		i = indexOfFirstColon - 1;
+		while (i > indexOfStartName && isspace((int) string[i])) {
+			i--;
+		}
+		indexOfEndName = i;
+
+		// get start and stop indices of the property
+		i = indexOfFirstColon + 1;
+		while (i < length && isspace((int) string[i])) {
+			i++;
+		}
+		indexOfStartProp = i;
+		i = length - 1;
+		while (i > indexOfStartProp && isspace((int) string[i])) {
+			i--;
+		}
+		indexOfEndProp = i;
+
+		// edge case where string has just the two required delimiters and nothing else
+		i = 0;
+		int charCount = 0;
+		while (i < length) {
+			if (string[i] != 'Q' && string[i] != 'q' && (int) string[i] != 58 && !isspace((int) string[i])) {
+				charCount++;
+			}
+			i++;
+		}
+		if (charCount == 0) {
+			fprintf(stdout, "'%s' has nothing to retrieve. Moving on to next line...\n", string);
+			return FALSE;
+		}
+
+		char *name = calloc(indexOfFirstColon - indexOfFirstChar, sizeof(char));
+		char *property = calloc(length - indexOfFirstColon, sizeof(char));
+		if (name == NULL || property == NULL) {
+			// out of memory
+			free(name);
+			free(property);
+			freeLinkedList(list);
+			die("Memory allocation failed - out of memory!");
+		}
+
+		strncpy(name, string + indexOfStartName, indexOfEndName - indexOfStartName + 1);
+		strncpy(property, string + indexOfStartProp, indexOfEndProp - indexOfStartProp + 1);
+
+		if (debugRetrieveAndStore) {
+			fprintf(stdout, "In function 'retrieveFact':\n\tInput string: %s\n\tLength of string: %d\n\tIndex of first char: %d\n\t"
+					"Start and stop of name indices: %d, %d\n\tStart and stop of property indices: %d, %d\n\t"
+					"Parsed name: \'%s\'\n\tParsed property: \'%s\'\n\tResult of query: ", string, length, indexOfFirstChar, indexOfStartName,
+					indexOfEndName,	indexOfStartProp, indexOfEndProp, name, property);
+		}
+
+		boolean getWasSuccessful = get(name, property, list);
+		free(name);
+		free(property);
+
+		return getWasSuccessful;
+	}
+
+// end procedure for retrieving facts
+// ----------------------------------
+
+// *****************************************************************************************************************************************************************************
+
+// --------------------------------------
+// begin procedure for reading input file
+
+
+
+// end procedure for reading input file
+// ------------------------------------
+
+// *****************************************************************************************************************************************************************************
+
+// ---------------------
+// begin test procedures
+
+	void testStoreAndRetrieveFact() {
+		LinkedList *ll = newLinkedList();
+		if (ll == NULL) {
+			exit(-1);
+		}
+		else {
+			(*ll).head = NULL;
+			(*ll).tail = NULL;
+			(*ll).size = 0;
+		}
+
+		char *string = "FCDC6600:number_registers=24";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+
+		string = "     F     CDC 600     :     opcode_bits     =     6";	// colon @ 23, equals @ 45, strlen 52
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+
+		string = "F #$%*#)==(: ndkje()[]:: = 209374h9:==:383945hj";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		string = "F IBM360      :       opcode_bits        =       8     ";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		string = "F PDP11: opcode_bits=4,8,10";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+		string = "F:=";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		string = "   F     :                     =                         ";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		string = " F =:";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		string = ":f=";
+		storeFact(string, ll);
+		fprintf(stdout, "\tCurrent head: [%s, %s, %s]\n\tCurrent tail: [%s, %s, %s]\n\tCurrent size: %d\n\n", ((ll->head)->name),
+				((ll->head)->property), ((ll->head)->value), ((ll->tail)->name), ((ll->tail)->property),
+				((ll->tail)->value), (*ll).size);
+
+		// begin testing retrieveFact
+
+		fprintf(stdout, "\nNow testing retrieveFact...\n\n");
+
+		string = "QCDC6600:number_registers";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "          Q            CDC6600  : number_registers          ";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'\n\t", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "Q   CDC 600   :opcode_bits";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "Q IBM360 : opcode_bits";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "Q #$%*#)==(                                : ndkje()[]:: ";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "F IBM360 : opcode_bits";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "q IBM360 : opcode_bits";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "Q:";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "q             :                          ";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		string = "Q IBM360 : owner        ";
+		fprintf(stdout, "Obtaining value for name/property combo \'%s\'...\n", string);
+		retrieveFact(string, ll);
+		fprintf(stdout, "\n");
+
+		freeLinkedList(ll);
+	}
+
+// end test procedures
+// -------------------
+
+// *****************************************************************************************************************************************************************************
+
+// -------------------------------------------------
+// begin miscellaneous procedures for main procedure
+
+	void scanFile(FILE *stream, boolean isFactFile, LinkedList* facts) {
+
+		int byte;
+		int counter = 0;
+		char *buffer = calloc(buflen, sizeof(char));
+		char *end = buffer + buflen - 1;
+		char *bufPtr = buffer;
+
+		while ((byte = getc(stream)) != EOF && bufPtr < end) {
+			if (byte == '\n') {
+				// save '\0' to buffer
+				// send buffer to store
+				// reset buffer
+				*bufPtr++ = '\0';
+
+				if (debug) {
+					fprintf(stdout, "\n\nNewline encountered.\nBuffer being sent for storing: \'%s\'", buffer);
+				}
+
+				if (isFactFile) {
+					storeFact(buffer, facts);
+				}
+				else {
+					retrieveFact(buffer, facts);
+				}
+
+				memset(buffer, 0, sizeof(*buffer));
+				bufPtr = buffer;
+				counter = 0;
+			}
+			else if (counter == (buflen * reallocWhenLoadFactorEquals)) {
+				// realloc buffer; increase size by double
+				buffer = realloc(buffer, (buflen * 2));
+				if (buffer == NULL) {
+					die("Memory allocation failed - out of memory!");
+				}
+				end = buffer + buflen - 1;
+			}
+			else {
+				// store byte to buffer
+				*bufPtr++ = byte;
+				counter++;
+
+				if (debug) {
+					fprintf(stdout, "%c", byte);
+				}
+
+			}
+		}
+
+		free(buffer);
+	}
+
+	void processFactsFile(char *filename, LinkedList* facts) {
+
+		FILE *factsFile;
+
+		factsFile = fopen(filename, "rb");
+		if (factsFile == NULL) {
+			die("Error: invalid facts file specified");
+		}
+
+		scanFile(factsFile, TRUE, facts);
+
+		if (debug) {
+			fprintf(stdout, "\n\nCurrent linked list:\n");
+			toString(facts);
+			fprintf(stdout, "\n\n");
+		}
+
+		fclose(factsFile);
+	}
+
+	void processQuestionsFile(char *filename, LinkedList* facts) {
+
+		FILE *qFile;
+
+		if (filename == NULL) {
+			qFile = stdin;
+		}
+		else {
+			qFile = fopen(filename, "rb");
+			if (qFile == NULL) {
+				//die("Error: invalid questions file specified");
+				return;
+			}
+		}
+
+		scanFile(qFile, FALSE, facts);
+
+		fclose(qFile);
+	}
+
+// end miscellaneous procedures for main procedure
+// -----------------------------------------------
+
+// *****************************************************************************************************************************************************************************
+
+	int main(int argc, char **argv) {
+
+		if (debug) {
+			testStoreAndRetrieveFact();
+		}
+
+		// standard syntax: facts computers.fax computers.q
+		// if arguments other than filenames are desired (e.g., '-d' for debug), enable the scanargs function and edit its parameters
+
+		else {
+
+			LinkedList* facts = newLinkedList();
+
+			printf("\n");
+
+			// too few arguments to continue
+			if (argc < 2) {
+				die("Error: you must specify a facts file!");
+			}
+
+			// only the facts file was provided; take questions from the command line
+			else if (argc == 2) {
+				argv++;
+				processFactsFile(*argv, facts);
+				processQuestionsFile(NULL, facts);
+			}
+
+			// the facts file was provided, as well as one or more questions files
+			else {
+				argc--, argv++;
+				processFactsFile(*argv, facts);
+				while (argc > 1) {
+					argc--, argv++;
+					processQuestionsFile(*argv, facts);
+				}
+			}
+
+			printf("\n");
+
+			freeLinkedList(facts);
+
+		}
+
+		return 0;
+	}

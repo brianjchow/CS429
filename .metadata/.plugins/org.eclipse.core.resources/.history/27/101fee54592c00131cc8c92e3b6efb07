@@ -1,0 +1,75 @@
+/*
+ * LinkedList.c
+ *
+ *  Created on: Oct 3, 2013
+ *      Author: Brian
+ */
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+typedef struct Node Node;
+typedef struct LinkedList LinkedList;
+typedef struct iterator;
+
+struct Node {
+	char *data;
+	Node *next;
+};
+
+struct LinkedList {
+	Node *head, *tail;
+	int size;
+};
+
+struct iterator {
+
+};
+
+struct LinkedList list;
+
+Node newNode(char *data) {
+	// note: 0 is false and 1 is true
+
+	Node out;
+	out = (struct Node) malloc(sizeof(struct Node));
+
+	if (*data != NULL) {
+		out.data = *data;
+		out.next = NULL;
+	}
+	return out;
+}
+
+//int add(LinkedList *list, Node *toAdd) {
+//	// note: 0 is false and 1 is true
+//
+//	if (*toAdd == NULL) {
+//		return 0;
+//	}
+//	if (*list == NULL) {
+//		(*list).head = *toAdd;
+//		(*list).tail = *toAdd;
+//		(*list).head.data = (*toAdd).data;
+//		(*list).tail.data = (*toAdd).data;
+//		(*list).size = 1;
+//		return 1;
+//	}
+//	else {
+//		(*list).tail.next = *toAdd;
+//		(*list).tail = *toAdd;
+//		(*list).size++;
+//		return 1;
+//	}
+//	return 0;
+//}
+
+int main() {
+	char string[] = {"Hello world"};
+	int size = sizeof(string);
+	printf("Size of string: %d\n", size);
+
+	return 0;
+}
